@@ -1,2 +1,2 @@
-# mediafountain
-Kodi Demo-Media-Addon
+# mediaroot
+Kodi addons repo

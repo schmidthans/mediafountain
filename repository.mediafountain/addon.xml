@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="repository.mediafountain" name="MediaFountain Repository" version="1.0.1" provider-name="mediafountain">
+	<extension point="xbmc.addon.repository" name="MediaFountain Addon Repository">
+	  https://github.com/schmidthans/mediafountain
+	<info>http://github.com/schmidthans/mediafountain/raw/master/addons.xml</info>
+	<checksum>http://github.com/schmidthans/mediafountain/raw/master/addons.xml.md5</checksum>
+	<datadir zip="true">http://github.com/schmidthans/mediafountain/raw/master/zips</datadir>
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<summary>MediaFountain Repository</summary>
+		<description></description>
+		<disclaimer></disclaimer>
+		<platform>all</platform>
+	</extension>
+</addon>
