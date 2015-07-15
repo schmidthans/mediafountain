@@ -33,8 +33,6 @@
 
 <setting id="adult" type="bool" label="[COLOR blue]Adult[/COLOR]" default="false"/>
 
-<setting id="epornik" type="bool" label="Epornik" default="true" enable="!eq(-1,false)"/>
-
 <setting id="freeomovie" type="bool" label="Freeomovie" default="true" enable="!eq(-3,false)"/>
 
 <setting id="pornhive" type="bool" label="Pornhive" default="true" enable="!eq(-5,false)"/>

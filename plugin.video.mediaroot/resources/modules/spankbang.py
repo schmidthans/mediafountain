@@ -34,16 +34,23 @@ def INDEX(url):
         else:
             issearch=False
         link = net.http_GET(url).content
-        match=re.compile('<div class="video-item".+?<a href="(.+?)".+?<img src="(.+?)".*?title="(.+?)"',re.S).findall(link)
+        match=re.compile('<div class="video-item".+?<a href="(.+?)".+?<img src="(.+?)".*?title="(.+?)".+?fa-clock-o"></i>\s(.+?)<',re.S).findall(link)
         np=re.compile('<span class="status">page.+?<a href="(.+?)" class="next">Next page', re.S).findall(link)
-        main.addDir('[COLOR blue]Set filter[/COLOR]',url,'spankbangFilter',artwork + '/main/filter.png')
+        if issearch:
+            main.addDir('[COLOR blue]filter >20min[/COLOR]',url,'spankbangFilter',artwork + '/main/filter.png')
         if len(np) > 0:
                 next_page = base_url + np[0]
+                pageparse = re.search('http://spankbang.com/.*?/(\d+)/', url)
+                if pageparse:
+                    print "### page", str(int(pageparse.group(1))+1)
+                    page = str(int(pageparse.group(1))+1)
+                else:
+                    page = '2'
                 if settings.getSetting('nextpagetop') == 'true':
-                        main.addDir('[COLOR blue]Next Page[/COLOR]',next_page,'spankbangIndex',artwork + '/main/next.png')
+                        main.addDir('[COLOR blue] Next Page %s [/COLOR]' % page,next_page,'spankbangIndex',artwork + '/main/next.png')
         if match:
-            for url,thumbnail,name in match:
-                name=name.encode('utf-8')
+            for url,thumbnail,name, lenght in match:
+                name=name.encode('utf-8') + " " + str(lenght) + "min"
                 url = base_url + url
                 thumbnail="http://"  + thumbnail
                 try: 
@@ -52,7 +59,7 @@ def INDEX(url):
                     continue
         if len(np) > 0:
                 if settings.getSetting('nextpagebottom') == 'true':
-                        main.addDir('[COLOR blue]Next Page[/COLOR]',next_page,'spankbangIndex',artwork + '/main/next.png')
+                        main.addDir('[COLOR blue]Next Page %s [/COLOR]' % page,next_page,'spankbangIndex',artwork + '/main/next.png')
         main.AUTOVIEW('movies')
 
 def VIDEOLINKS(name,url,thumb):
