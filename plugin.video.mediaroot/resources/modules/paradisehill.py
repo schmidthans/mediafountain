@@ -67,7 +67,7 @@ def INDEX(url):
 
 def VIDEOLINKS(name,url,thumb):
         link = net.http_GET(url).content
-        match=re.compile('var\sfilms=."(.+?)"', re.S).findall(link)
+        match=re.compile('films="(.+?)"', re.S).findall(link)
         if match:
             match1=re.compile('(http://.+?.mp4)').findall(match[0])
             if not match1:
