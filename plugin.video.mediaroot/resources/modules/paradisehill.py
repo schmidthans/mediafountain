@@ -17,8 +17,8 @@ def CATEGORIES():
 def GENRES():
     url = base_url + '/en/'
     link = net.http_GET(url).content
-    match=re.compile('<h2>Categories</h2>(.+?)<div class="sep"></div>', re.S).findall(link)
-    genre=re.compile('<div\sclass="item_zag.+?<a\shref="(.+?)"\stitle="(.+?)".*?<img src="(.+?)".+?Films:(.+?)</div', re.S).findall(match[0])
+    match=re.compile('<h2>Categories</h2>(.+?)<script type="', re.S).findall(link)
+    genre=re.compile('\shref="(.+?)"\stitle="(.+?)".+?src="(.+?)".+?Films:(.+?)<', re.S).findall(match[0])
     if genre:
         for (phUrl, phTitle, phThumb, phCount) in genre:
             url = base_url + phUrl
@@ -35,8 +35,12 @@ def INDEX(url):
         else:
             issearch=False
         link = net.http_GET(url).content
-        match=re.compile('<div class="cat_item">.+?<a href="(.+?)"\s{0,2}title=".+?"\s{0,2}>(.+?)<.*?<img src="(.+?)"',re.S).findall(link)
-        np=re.compile('class="pagi">.+?<li><span>.+?</span></li>\n<li><a href=".+?page=(.+?)">', re.S).findall(link)
+        parse = re.search('class="row new-collect(.+?)class="pagination', link, re.S)
+        match = re.compile('bci(-title|)-link" href="(.+?)".+?bci-title">(.+?)<.+?img["]? src="(.+?)"', re.S).findall(parse.group(1))
+        pagination=re.compile('class="pagination(.+?)</div>', re.S).findall(link)
+        lastpage=re.compile('.*page=(\d+)">', re.S).findall(pagination[0])
+        np=re.compile('page\sactive.+?<li class="page"><a href=".+?page=(.+?)">', re.S).findall(pagination[0])
+
         if len(np) > 0:
                 ispage=re.compile('(.+?page=)\d').findall(url)
                 if ispage:
@@ -46,9 +50,9 @@ def INDEX(url):
                 if issearch:
                     next_page=next_page.replace("?page","&page")
                 if settings.getSetting('nextpagetop') == 'true':
-                        main.addDir('[COLOR blue]Next Page[/COLOR]',next_page,'paradisehillIndex',artwork + '/main/next.png')
+                        main.addDir('[COLOR blue]Next Page %s/%s[/COLOR]' % (str(np[0]),str(lastpage[0])),next_page,'paradisehillIndex',artwork + '/main/next.png')
         if match:
-            for url,name,thumbnail in match:
+            for x,url,name,thumbnail in match:
                 name=name.encode('utf-8')
                 url = base_url + url
                 thumbnail="http://www.paradisehill.tv"  + thumbnail
