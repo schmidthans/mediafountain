@@ -91,6 +91,7 @@ def VIDEOLINKS(name,url,thumb):
 
                         if main.resolvable(url):
                                 try:
+                                        url = url +'|Referer=http://www.paradisehill.tv/static/flowplayer/flowplayer.commercial-3.2.18.swf'
                                         main.addHDir(cdname,url,'resolve',thumb, disk=discno)
                                 except:
                                         continue
