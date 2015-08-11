@@ -42,7 +42,6 @@ def INDEX(url):
                 next_page = base_url + np[0]
                 pageparse = re.search('http://spankbang.com/.*?/(\d+)/', url)
                 if pageparse:
-                    print "### page", str(int(pageparse.group(1))+1)
                     page = str(int(pageparse.group(1))+1)
                 else:
                     page = '2'
@@ -52,7 +51,7 @@ def INDEX(url):
             for url,thumbnail,name, lenght in match:
                 name=name.encode('utf-8') + " " + str(lenght) + "min"
                 url = base_url + url
-                thumbnail="http://"  + thumbnail
+                thumbnail="http:"  + thumbnail
                 try: 
                     main.addDir(name,url,'spankbangVideoLinks',thumbnail)
                 except:
