@@ -1,3 +1,6 @@
+Version 0.3.4
+fixed search hoster https
+
 Version 0.3.3
 paradisehill streams fixed
 

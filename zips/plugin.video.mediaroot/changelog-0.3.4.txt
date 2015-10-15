@@ -1,0 +1,22 @@
+Version 0.3.4
+fixed search hoster https
+
+Version 0.3.3
+paradisehill streams fixed
+
+Version 0.3.2
+paradisehill stream regex fixed
+
+Version 0.3.1
+paradisehill fixed
+
+Version 0.3.0
+mykino fixed series
+
+Version 0.2.0
+add mykino
+added some icons
+cleanup old files
+
+Version 0.1
+Initial Release

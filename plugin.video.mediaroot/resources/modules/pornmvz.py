@@ -46,7 +46,7 @@ def VIDEOLINKS(name,url,thumb):
         newList =[]
         link = net.http_GET(url).content
         match=re.compile('class="itemFullText">(.+?)id="content_right"', re.S).findall(link)
-        match1=re.compile('(http://(.*?)\/.*?)[\'|"|\&|<]').findall(match[0])
+        match1=re.compile('(http[s]?://(.*?)\/.*?)[\'|"|\&|<]').findall(match[0])
         for url,hoster in match1:
                 url = str(url).replace('&#038;','&').replace('&amp;','&')
                 hmf = urlresolver.HostedMediaFile(url)

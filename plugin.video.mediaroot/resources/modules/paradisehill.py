@@ -69,9 +69,9 @@ def VIDEOLINKS(name,url,thumb):
         link = net.http_GET(url).content
         match=re.compile('films="(.+?)"', re.S).findall(link)
         if match:
-            match1=re.compile('(http://.+?.mp4)').findall(match[0])
+            match1=re.compile('(http[s]?://.+?.mp4)').findall(match[0])
             if not match1:
-                match1=re.compile('(http://.+?.flv)').findall(match[0])
+                match1=re.compile('(http[s]?://.+?.flv)').findall(match[0])
             if match1:
                 partcounter=1
                 for url in match1:

@@ -208,6 +208,8 @@ def getHost(url, disk=''):
       host = host[4:]
     if host.startswith('http://'):
       host = host[7:]
+    if host.startswith('https://'):
+      host = host[8:]
 
     host = host.title()
 

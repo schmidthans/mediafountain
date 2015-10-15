@@ -51,7 +51,7 @@ def VIDEOLINKS(name,url,thumb):
         
         link = net.http_GET(url).content
         match=re.compile('class="videosection">(.+?)class="textsection">', re.S).search(link)
-        match1=re.compile('(http://.+?\/.*?)[\'|"|\&|<]', re.S).findall(match.group(0))
+        match1=re.compile('(http[s]?://.+?\/.*?)[\'|"|\&|<]', re.S).findall(match.group(0))
         for url in match1:
                 if main.resolvable(url):
                         try:

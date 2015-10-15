@@ -101,7 +101,7 @@ def SERIESLINKS(name, dataPost,thumb):
         newList =[]
         dataPostdic = eval(dataPost)
         link=net.http_POST(base_url+'/engine/ajax/a.sseries.php', dataPostdic).content
-        match=re.compile('(http:\\\/\\\/(.+?)\\\/.+?)[#|"]',re.S).findall(link)
+        match=re.compile('(http[s]?:\\\/\\\/(.+?)\\\/.+?)[#|"]',re.S).findall(link)
         if match:
             for url,hoster in match:
                 link = str(url).replace('&#038;','&').replace('&amp;','&').replace('\/','/')
