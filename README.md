@@ -1,2 +1,2 @@
 # mediaroot
-Kodi addons repo
+Kodi addons repo by schmidthans
