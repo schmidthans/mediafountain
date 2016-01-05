@@ -2,7 +2,7 @@
 
 import urllib,urllib2,re,xbmcplugin,xbmcgui,sys,xbmc,urlresolver,xbmcaddon,os
 from resources.modules import main
-from resources.modules import mykino
+from resources.modules import mykino, szenestreams
 from resources.modules import freeomovie, pornhive,pornmvz,paradisehill,spankbang
 
 addon_id = 'plugin.video.mediaroot'
@@ -60,6 +60,8 @@ def CATEGORIES():
 def MOVIESECTIONS():
         if settings.getSetting('mykinomovie') == 'true':
                 main.addDir('MyKino Movie','none','mykinoCategories',artwork + '/movies/mykino.png')
+        if settings.getSetting('szenestreamsmovie') == 'true':
+                main.addDir('SzeneStreams Movie','none','szenestreamsCategories',artwork + '/movies/mykino.png')
 
 def HDMOVIESECTIONS():
         pass
@@ -114,6 +116,12 @@ def MASTERSEARCH():
                 print "#### masterseach mykino"
                 try:
                         threads.append(main.Thread(mykino.MASTERSEARCH(search)))
+                except:
+                        pass
+        if settings.getSetting('szenestreams') == 'true':
+                print "#### masterseach szenestreams"
+                try:
+                        threads.append(main.Thread(szenestreams.MASTERSEARCH(search)))
                 except:
                         pass
         [i.start() for i in threads]
@@ -274,6 +282,31 @@ elif mode=='animeSections':
 elif mode=='resolve':
         print "####resolve "+url
         main.RESOLVE(name,url,thumb)
+
+# szenestreams modules
+elif mode=='szenestreamsCategories':
+        print ""+url
+        szenestreams.CATEGORIES()
+
+elif mode=='szenestreamsIndex':
+        print "xxxxxxxxxxxxxxxxxxxx"+url
+        szenestreams.INDEX(url)
+
+elif mode=='szenestreamsGenres':
+        print ""+url
+        szenestreams.GENRES()
+
+elif mode=='szenestreamsFilter':
+        print ""+url
+        szenestreams.FILTER(url)
+
+elif mode=='szenestreamsSearch':
+        print ""+url
+        szenestreams.SEARCH()
+
+elif mode=='szenestreamsVideoLinks':
+        print ""+url
+        szenestreams.VIDEOLINKS(name,url,thumb)
 
 # mykino modules
 elif mode=='mykinoCategories':

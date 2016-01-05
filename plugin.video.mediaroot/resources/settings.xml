@@ -50,6 +50,7 @@
 
 <setting id="mykinomovie" type="bool" label="MyKino Movie" default="true" enable="!eq(-1,false)"/>
 
+<setting id="szenestreamsmovie" type="bool" label="SzeneStreams Movie" default="true" enable="!eq(-1,false)"/>
 
 <setting id="shows" type="bool" label="[COLOR blue]TV Shows[/COLOR]" default="false"/>
 

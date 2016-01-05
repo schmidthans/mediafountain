@@ -180,6 +180,13 @@ def getHost(url, disk=''):
     if 'spankbang' in url:
        host = 'spankbang'
 
+    if 'rapidvideo' in url:
+       host = 'rapidvideo'
+
+    if host == None:
+        host = url
+
+    print "##### HOST:"+ host
     if host.endswith('.com'):
        host = host[:-4]
     if host.endswith('.com/'):
@@ -768,32 +775,32 @@ def OTHER_RESOLVERS(url):
         match=re.compile('<source src="(.+?)"').findall(link)
         url = match[0]
 
-    if 'flashx' in url and 'embed_player' in url:
-        link = net.http_GET(url).content
-        yes=re.compile('name="yes".*?value="(.+?)"').findall(link)
-        sec=re.compile('name="sec".*?value="(.+?)"').findall(link)
-        if yes and sec:
-           dataPost = {'yes': yes[0], 'sec': sec[0]}
-           data1=net.http_POST('http://play.flashx.tv/player/player.php', dataPost).content
-           if data1:
-              player=re.compile('value="(http://.+?\.flashx.tv/nuevo/player/.+?\.swf.*?)"').findall(data1)
-              if player:
-                 data2 = net.http_GET(player[0], {'Content-Type':'application/x-www-form-urlencoded', 'Referer': 'http://play.flashx.tv/player/player.php'}).content
-                 if data2:
-                    playerurl = player[0].split('config=')
-                    data3 = net.http_GET(playerurl[1],{'Referer': player[0]} ).content
-                    if data3:
-                        stream_url=re.compile('<file>(.+?)</file>').findall(data3)
-                        if stream_url:
-                           url=stream_url[0]
-                        else:
-                           print "flashx data2 steam not found"
-              else:
-                 print "flashx player not found"
-           else:
-              print "flashx data1 not found"
-        else:
-           print "flashx no yes and sec found"
+#     if 'flashx' in url and 'embed_player' in url:
+#         link = net.http_GET(url).content
+#         yes=re.compile('name="yes".*?value="(.+?)"').findall(link)
+#         sec=re.compile('name="sec".*?value="(.+?)"').findall(link)
+#         if yes and sec:
+#            dataPost = {'yes': yes[0], 'sec': sec[0]}
+#            data1=net.http_POST('http://play.flashx.tv/player/player.php', dataPost).content
+#            if data1:
+#               player=re.compile('value="(http://.+?\.flashx.tv/nuevo/player/.+?\.swf.*?)"').findall(data1)
+#               if player:
+#                  data2 = net.http_GET(player[0], {'Content-Type':'application/x-www-form-urlencoded', 'Referer': 'http://play.flashx.tv/player/player.php'}).content
+#                  if data2:
+#                     playerurl = player[0].split('config=')
+#                     data3 = net.http_GET(playerurl[1],{'Referer': player[0]} ).content
+#                     if data3:
+#                         stream_url=re.compile('<file>(.+?)</file>').findall(data3)
+#                         if stream_url:
+#                            url=stream_url[0]
+#                         else:
+#                            print "flashx data2 steam not found"
+#               else:
+#                  print "flashx player not found"
+#            else:
+#               print "flashx data1 not found"
+#         else:
+#            print "flashx no yes and sec found"
 
     return str(url)
 
