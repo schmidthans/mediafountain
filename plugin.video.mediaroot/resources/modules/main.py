@@ -684,7 +684,6 @@ def GETHOSTTHUMB(host):
 
 #Function used for resolving video urls before  playback_____________________________________________________________________________    
 def RESOLVE(name,url,thumb):
-    #print "eliinfo ###################### RESOLVE"
     meta=0
     try:
         meta = getMeta(types,name,year,show,season,episode)
@@ -692,12 +691,14 @@ def RESOLVE(name,url,thumb):
         meta=0
     hmf = urlresolver.HostedMediaFile(url)
     host = ''
-    if hmf:
+    if 'openload' in url:
+        url = OPENLOAD(url)
+    elif hmf:
         url = urlresolver.resolve(url)
         host = hmf.get_host()
     else:
         url = OTHER_RESOLVERS(url)
-           
+
     params = {'url':url, 'name':name, 'thumb':thumb}
     if meta == 0:
         addon.add_video_item(params, {'title':name}, img=thumb)
@@ -722,6 +723,59 @@ def RESOLVE(name,url,thumb):
         xbmc.Player ().play(url, liz, False)
 
 #Used to resolve urls that urlresolver doesn't support________________________________________________________________________________
+def OPENLOAD(url):
+    result = net.http_GET(url).content
+    parse = re.search('videocontainer.*?text/javascript">(.*?);</script>', result, re.S)
+    if parse:
+        todecode = parse.group(1).split(';')
+        todecode = todecode[-1].replace(' ','')
+
+        code = {
+        "(ﾟДﾟ) [1]" : "f",
+        "(ﾟДﾟ) [c]" : "c",
+        "(ﾟДﾟ) [constructor]" : '"',
+        "(ﾟДﾟ)[ﾟoﾟ]" : "o",
+        "(ﾟДﾟ) [return]" : "\\",
+        "(ﾟДﾟ) [ ﾟΘﾟ]" : "_",
+        "(ﾟДﾟ) [ ﾟΘﾟﾉ]" : "b",
+        "(ﾟДﾟ) [ ﾟωﾟﾉ]" : "a",
+        "(ﾟДﾟ) [ ﾟДﾟﾉ]" : "e",
+        "(ﾟДﾟ) [ﾟｰﾟﾉ]" : "d",
+        "(ﾟДﾟ) ['_']"  : "Function()",
+        "(ﾟДﾟ)[ﾟεﾟ]": "/",
+        "(ﾟｰﾟ)": "4",
+        "(o^_^o)": "9",
+        "c": "0",
+        "o": "3",
+        "ol": "undefined",
+        "oﾟｰﾟo": "u",
+        "ﾟoﾟ": "constructor",
+        "(ﾟΘﾟ)": "1",
+        "ﾟεﾟ": "return",
+        "ﾟωﾟﾉ": "undefined",
+        "_": "3",
+        }
+        try:
+            todecode = todecode.encode('utf-8')
+            for searchword,isword in code.iteritems():
+                todecode = todecode.replace(searchword,isword)
+
+            todecode = re.sub(r'\((\d)\+(\d)\)', lambda m: '{0}'.format(int(m.group(1)) + int(m.group(2))), todecode.replace(" ","")).replace(" ","")
+            todecode = re.sub(r'\((\d)\^(\d)\^(\d)\)', lambda m: '{0}'.format(int(m.group(1)) ^ int(m.group(2))^ int(m.group(3))), todecode).replace(" ","")
+            todecode = re.sub(r'\((\d)\+(\d)\)', lambda m: '{0}'.format(int(m.group(1)) + int(m.group(2))), todecode).replace(" ","")
+            todecode = re.sub(r'\((\d)\-(\d)\)', lambda m: '{0}'.format(int(m.group(1)) - int(m.group(2))), todecode).replace(" ","")
+            todecode = re.sub(r'\((\d)\+(\d)\+(\d)\)', lambda m: '{0}'.format(int(m.group(1)) + int(m.group(2))+ int(m.group(3))), todecode).replace(" ","")
+            todecode = re.sub(r'\((\d)\-(\d)\+(\d)\)', lambda m: '{0}'.format(int(m.group(1)) - int(m.group(2))+ int(m.group(3))), todecode).replace(" ","")
+            todecode = re.sub(r'\((\d)\+(\d)\-(\d)\)', lambda m: '{0}'.format(int(m.group(1)) + int(m.group(2))- int(m.group(3))), todecode).replace(" ","")
+            thestring =  re.search("return3(.*?)\d\)", todecode.replace("+","")).group(1).replace("/","\\")
+            if thestring:
+                thestring =  unicode(thestring, 'unicode-escape').replace('\\/','/').replace(' ','')
+                url = re.search('window.vr="(http.*?)"', thestring)
+                if url:
+                    return str(url.group(1))
+        except Exception as e:
+            print "ERROR parsing openload code"
+
 def OTHER_RESOLVERS(url):
     if 'uploadcrazy' in url:
         link = net.http_GET(url).content
