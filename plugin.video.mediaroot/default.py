@@ -15,6 +15,24 @@ settings = xbmcaddon.Addon(id=addon_id)
 artwork = main.artwork
 
 def CATEGORIES():
+        if settings.getSetting('movies') == 'true':
+                main.addDir('Movies','none','movieSections',artwork + '/main/movie.png')
+        if settings.getSetting('hdmovies') == 'true':
+                main.addDir('HD Movies','none','hdSections',artwork + '/main/hdmovie.png')
+        if settings.getSetting('shows') == 'true':        
+                main.addDir('TV Shows','none','tvSections',artwork + '/main/tvshows.png')
+        if settings.getSetting('docs') == 'true':
+                main.addDir('Documentaries','none','docSections',artwork + '/main/docs.png')
+        if settings.getSetting('cartoons') == 'true':
+                main.addDir('Cartoons','none','cartoonSections',artwork + '/main/cartoons.png')
+        if settings.getSetting('anime') == 'true':
+                main.addDir('Anime','none','animeSections',artwork + '/main/anime.png')
+        if settings.getSetting('favorites') == 'true':
+                main.addDir('Favorites','none','favorites',artwork + '/main/favorites.png')
+        if settings.getSetting('search') == 'true':
+                main.addDir('Master Search','none','masterSearch',artwork + '/main/search.png')
+        if settings.getSetting('resolver') == 'true':
+                main.addDir('Resolver Settings','none','resolverSettings',artwork + '/main/resolver.png')
         if settings.getSetting('adult') == 'true':
                 text_file = None
                 if not os.path.exists(xbmc.translatePath("special://home/userdata/addon_data/plugin.video.mediaroot/")):
@@ -38,29 +56,11 @@ def CATEGORIES():
                                 text_file.close()
                                 
                 main.addDir('Adults Only','none','adultSections',artwork + '/main/adult.png')
-        if settings.getSetting('movies') == 'true':
-                main.addDir('Movies','none','movieSections',artwork + '/main/movie.png')
-        if settings.getSetting('hdmovies') == 'true':
-                main.addDir('HD Movies','none','hdSections',artwork + '/main/hdmovie.png')
-        if settings.getSetting('shows') == 'true':        
-                main.addDir('TV Shows','none','tvSections',artwork + '/main/tvshows.png')
-        if settings.getSetting('docs') == 'true':
-                main.addDir('Documentaries','none','docSections',artwork + '/main/docs.png')
-        if settings.getSetting('cartoons') == 'true':
-                main.addDir('Cartoons','none','cartoonSections',artwork + '/main/cartoons.png')
-        if settings.getSetting('anime') == 'true':
-                main.addDir('Anime','none','animeSections',artwork + '/main/anime.png')
-        if settings.getSetting('favorites') == 'true':
-                main.addDir('Favorites','none','favorites',artwork + '/main/favorites.png')
-        if settings.getSetting('search') == 'true':
-                main.addDir('Master Search','none','masterSearch',artwork + '/main/search.png')
-        if settings.getSetting('resolver') == 'true':
-                main.addDir('Resolver Settings','none','resolverSettings',artwork + '/main/resolver.png')
 
 def MOVIESECTIONS():
         if settings.getSetting('mykinomovie') == 'true':
                 main.addDir('MyKino Movie','none','mykinoCategories',artwork + '/movies/mykino.png')
-        if settings.getSetting('szenestreamsmovie') == 'true':
+        if settings.getSetting('szenestreams') == 'true':
                 main.addDir('SzeneStreams Movie','none','szenestreamsCategories',artwork + '/movies/mykino.png')
 
 def HDMOVIESECTIONS():
@@ -105,6 +105,7 @@ def ADULT():
                 notice = xbmcgui.Dialog().ok('Wrong Password','The password you entered is incorrect')
 
 def MASTERSEARCH():
+
         search = ''
         keyboard = xbmc.Keyboard(search,'Search')
         keyboard.doModal()
@@ -112,16 +113,14 @@ def MASTERSEARCH():
                 search = keyboard.getText()
                 search = search.replace(' ','+')
         threads = []
-        if settings.getSetting('mykino') == 'true':
-                print "#### masterseach mykino"
-                try:
-                        threads.append(main.Thread(mykino.MASTERSEARCH(search)))
-                except:
-                        pass
         if settings.getSetting('szenestreams') == 'true':
-                print "#### masterseach szenestreams"
                 try:
                         threads.append(main.Thread(szenestreams.MASTERSEARCH(search)))
+                except:
+                        pass
+        if settings.getSetting('mykinomovie') == 'true':
+                try:
+                        threads.append(main.Thread(mykino.MASTERSEARCH(search)))
                 except:
                         pass
         [i.start() for i in threads]
@@ -136,13 +135,11 @@ def MASTERPORNSEARCH():
                 search = search.replace(' ','+')
         threads = []
         if settings.getSetting('pornmvz') == 'true':
-                print "#### masterseach pornmvz", search
                 try:
                         threads.append(main.Thread(pornmvz.MASTERSEARCH(search)))
                 except:
                         pass
         if settings.getSetting('pornhive') == 'true':
-                print "#### masterseach pornhive", search
                 try:
                         threads.append(main.Thread(pornhive.MASTERSEARCH(search)))
                 except:
@@ -173,7 +170,6 @@ def COLLECTIVESEARCH(name):
 #                 except:
 #                         pass
         if settings.getSetting('pornhive') == 'true':
-                print "#### masterseach pornhive"
                 try:
                         threads.append(main.Thread(pornhive.MASTERSEARCH(name)))
                 except:
@@ -258,7 +254,6 @@ elif mode=='collectiveSearch':
         COLLECTIVESEARCH(name)
 
 elif mode=='masterPornSearch':
-#        print "####### masterPornSearch"
         print ""+url
         MASTERPORNSEARCH()
 
@@ -280,7 +275,7 @@ elif mode=='animeSections':
 
 #Main modes_____________________________________________________________________
 elif mode=='resolve':
-        print "####resolve "+url
+        print ""+url
         main.RESOLVE(name,url,thumb)
 
 # szenestreams modules
@@ -289,7 +284,7 @@ elif mode=='szenestreamsCategories':
         szenestreams.CATEGORIES()
 
 elif mode=='szenestreamsIndex':
-        print "xxxxxxxxxxxxxxxxxxxx"+url
+        print ""+url
         szenestreams.INDEX(url)
 
 elif mode=='szenestreamsGenres':
@@ -314,7 +309,7 @@ elif mode=='mykinoCategories':
         mykino.CATEGORIES()
 
 elif mode=='mykinoIndex':
-        print "xxxxxxxxxxxxxxxxxxxx"+url
+        print ""+url
         mykino.INDEX(url)
 
 elif mode=='mykinoGenres':
@@ -401,7 +396,7 @@ elif mode=='spankbangCategories':
         spankbang.CATEGORIES()
 
 elif mode=='spankbangIndex':
-        print "xxxxxxxxxxxxxxxxxxxx"+url
+        print ""+url
         spankbang.INDEX(url)
 
 elif mode=='spankbangGenres':
@@ -478,12 +473,5 @@ elif mode=='paradisehillSearch':
 elif mode=='paradisehillVideoLinks':
         print ""+url
         paradisehill.VIDEOLINKS(name,url,thumb)
-
-
-
-
-
-
-
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))

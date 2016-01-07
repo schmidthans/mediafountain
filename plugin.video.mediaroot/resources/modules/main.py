@@ -17,11 +17,12 @@ import threading
 
 class Thread(threading.Thread):
     def __init__(self, target, *args):
-      self._target = target
-      self._args = args
-      threading.Thread.__init__(self)
+        self._target = target
+        self._args = args
+        threading.Thread.__init__(self)
     def run(self):
-      self._target(*self._args)
+        if self._args:
+            self._target(*self._args)
 
 #Define common.addon_____________________________________________________________________________________________________________________________
 addon_id = 'plugin.video.mediaroot'
@@ -98,7 +99,6 @@ def resolvable(url):
     if 'spankbang' in url:
        status = True
 
-    print "########status", status
     return(status)
 
 def getHost(url, disk=''):
@@ -106,9 +106,7 @@ def getHost(url, disk=''):
     hmf = urlresolver.HostedMediaFile(url)
     if hmf:
        host = hmf.get_host()
-       print "### get host:", host, url
        hosterstring = re.search('//(www.|)(.+?)\..+?/', url)
-       print "####### hosterstring", hosterstring.group(2)
        host = hosterstring.group(2)
 
     if 'vidcrazy' in url:
@@ -186,7 +184,6 @@ def getHost(url, disk=''):
     if host == None:
         host = url
 
-    print "##### HOST:"+ host
     if host.endswith('.com'):
        host = host[:-4]
     if host.endswith('.com/'):
@@ -699,10 +696,8 @@ def RESOLVE(name,url,thumb):
         url = urlresolver.resolve(url)
         host = hmf.get_host()
     else:
-        print "eliinfo ###################### RESOLVE other resolvers"
         url = OTHER_RESOLVERS(url)
            
-    print "### playpar ", dir(url) ,name, host
     params = {'url':url, 'name':name, 'thumb':thumb}
     if meta == 0:
         addon.add_video_item(params, {'title':name}, img=thumb)
@@ -712,11 +707,9 @@ def RESOLVE(name,url,thumb):
         addon.add_video_item(params, {'title':name}, img=meta['cover_url'])
         liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=meta['cover_url'])
         liz.setInfo('video',infoLabels=meta)
-    print " ### xbmcplayer", url, liz, False
-    print "### type url", type(url)
     if str(type(url)) == "<type 'instance'>" or url == False:
         xbmc.executebuiltin("Notification('ERROR','File Not Found or removed')")
-        print "### error not found"
+        print "error not found"
         dialog = xbmcgui.Dialog()
         #dialog.notification('Movie Trailers', 'Finding Nemo download finished.', xbmcgui.NOTIFICATION_INFO, 5000)
         dialog.select('Error message', ['File Not Found or removed'], 5000)
@@ -809,7 +802,6 @@ def AUTOVIEW(content):
        if content:
              xbmcplugin.setContent(int(sys.argv[1]), content)
              if settings.getSetting('auto-view') == 'true':
-                    print "##### autoview content", content
                     if content == 'movies':
                           xbmc.executebuiltin("Container.SetViewMode(%s)" % settings.getSetting('movies-view'))
                     elif content == 'tvshows':

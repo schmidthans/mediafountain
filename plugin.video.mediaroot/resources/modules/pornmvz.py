@@ -53,6 +53,10 @@ def VIDEOLINKS(name,url,thumb):
                 if main.resolvable(url):
                         streamcounter += 1
                         newList =[]
+                        if re.match('http://flashx.tv/embed-', url):
+			  media_id = re.compile('http://((?:www.|play.)?flashx.tv)/(?:embed-|dl\?)?([0-9a-zA-Z]+)').search(url)
+			  if media_id:
+			    url = 'http://www.flashx.tv/%s.html' % media_id.group(2)
                         newList.append((name, url, hoster,'resolve',thumb))
         if streamcounter == 1:
             main.RESOLVE(newList[0][0],newList[0][1],newList[0][3])

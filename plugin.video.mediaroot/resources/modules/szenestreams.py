@@ -63,6 +63,7 @@ def INDEX(url):
             if re.compile('[0-9]', re.S).match(url[-1]):
                 np=re.compile('<span>(\d*?)</span>', re.S).findall(link)
 
+        ispage = None
         if len(np) > 0:
                 ispage=re.compile('(.+?-)(\d)').findall(url)
                 if ispage and int(ispage[0][1]) == int(np[-1]):
@@ -86,9 +87,12 @@ def INDEX(url):
                     main.addDir(name,url,'szenestreamsVideoLinks',thumbnail)
                 except:
                     continue
-        if ispage and int(ispage[0][1]) != int(np[-1]):
-                if settings.getSetting('nextpagebottom') == 'true':
-                        main.addDir('[COLOR blue]Next Page %s/%s[/COLOR]' % (nextpagestr,str(np[-1])),next_page,'szenestreamsIndex',artwork + '/main/next.png')
+        if settings.getSetting('nextpagebottom') == 'true':
+            if len(np) > 0:
+                if ispage and int(ispage[0][1]) == int(np[-1]):
+                    pass
+                else:
+                    main.addDir('[COLOR blue]Next Page %s/%s[/COLOR]' % (nextpagestr,str(np[-1])),next_page,'szenestreamsIndex',artwork + '/main/next.png')
         main.AUTOVIEW('movies')
 
 def VIDEOLINKS(name,url,thumb):
