@@ -4,6 +4,7 @@ import urllib,urllib2,re,xbmcplugin,xbmcgui,sys,xbmc,urlresolver,xbmcaddon,os
 from resources.modules import main
 from resources.modules import mykino, szenestreams
 from resources.modules import freeomovie, pornhive,pornmvz,paradisehill,spankbang
+from resources.modules.config import cConfig
 
 addon_id = 'plugin.video.mediaroot'
 from t0mm0.common.addon import Addon
@@ -56,6 +57,7 @@ def CATEGORIES():
                                 text_file.close()
                                 
                 main.addDir('Adults Only','none','adultSections',artwork + '/main/adult.png')
+        main.addDir('MediaRoot Settings','none','MediaRootSettings',artwork + '/main/settings.png')
 
 def MOVIESECTIONS():
         if settings.getSetting('mykinomovie') == 'true':
@@ -220,7 +222,6 @@ elif mode=='removeFavorite':
         print ""+url
         main.removeFavorite()
 
-
 elif mode=='getFavorites':
         print ""+url
         main.getFavorites(url)
@@ -261,9 +262,15 @@ elif mode=='adultSections':
         print ""+url
         ADULT()
 
+elif mode=='MediaRootSettings':
+        print ""+url
+        cConfig().showSettingsWindow()
+        CATEGORIES()
+
 elif mode=='resolverSettings':
         print ""+url
         urlresolver.display_settings()
+        CATEGORIES()
 
 elif mode=='cartoonSections':
         print ""+url
