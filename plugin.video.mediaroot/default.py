@@ -43,7 +43,6 @@ def CATEGORIES():
                         pin = ''
                         notice = xbmcgui.Dialog().yesno('Would You Like To Set A Password','Would you like to set a password for the adult section?','','')
                         if notice:
-                                print "#### errorrrrrrrrrrrr"
                                 keyboard = xbmc.Keyboard(pin,'Please Choose A New Password')
                                 keyboard.doModal()
                                 if keyboard.isConfirmed():
@@ -209,276 +208,276 @@ print "Episode is: "+str(episode)
 print "Show is: "+str(show)
 print "Type is: "+str(types)
 
-#Default modes__________________________________________________________________
-if mode==None or url==None or len(url)<1:
-        print ""
-        CATEGORIES()
-
-elif mode=='addFavorite':
-        print ""+url
-        main.addFavorite()
-
-elif mode=='removeFavorite':
-        print ""+url
-        main.removeFavorite()
-
-elif mode=='getFavorites':
-        print ""+url
-        main.getFavorites(url)
-
-elif mode=='favorites':
-        print ""+url
-        FAVORITES()
-        
-elif mode=='movieSections':
-        print ""+url
-        MOVIESECTIONS()
-
-elif mode=='tvSections':
-        print ""+url
-        TVSECTIONS()
-
-elif mode=='docSections':
-        print ""+url
-        DOCSECTIONS()
-
-elif mode=='hdSections':
-        print ""+url
-        HDMOVIESECTIONS()
-
-elif mode=='masterSearch':
-        print ""+url
-        MASTERSEARCH()
-
-elif mode=='collectiveSearch':
-        print ""+url
-        COLLECTIVESEARCH(name)
-
-elif mode=='masterPornSearch':
-        print ""+url
-        MASTERPORNSEARCH()
-
-elif mode=='adultSections':
-        print ""+url
-        ADULT()
-
-elif mode=='MediaRootSettings':
+#Settings modes
+if mode=='MediaRootSettings':
         print ""+url
         cConfig().showSettingsWindow()
-        CATEGORIES()
 
 elif mode=='resolverSettings':
         print ""+url
         urlresolver.display_settings()
-        CATEGORIES()
 
-elif mode=='cartoonSections':
-        print ""+url
-        CARTOONSECTIONS()
-
-elif mode=='animeSections':
-        print ""+url
-        ANIMESECTIONS()
-
-#Main modes_____________________________________________________________________
-elif mode=='resolve':
-        print ""+url
-        main.RESOLVE(name,url,thumb)
-
-# szenestreams modules
-elif mode=='szenestreamsCategories':
-        print ""+url
-        szenestreams.CATEGORIES()
-
-elif mode=='szenestreamsIndex':
-        print ""+url
-        szenestreams.INDEX(url)
-
-elif mode=='szenestreamsGenres':
-        print ""+url
-        szenestreams.GENRES()
-
-elif mode=='szenestreamsFilter':
-        print ""+url
-        szenestreams.FILTER(url)
-
-elif mode=='szenestreamsSearch':
-        print ""+url
-        szenestreams.SEARCH()
-
-elif mode=='szenestreamsVideoLinks':
-        print ""+url
-        szenestreams.VIDEOLINKS(name,url,thumb)
-
-# mykino modules
-elif mode=='mykinoCategories':
-        print ""+url
-        mykino.CATEGORIES()
-
-elif mode=='mykinoIndex':
-        print ""+url
-        mykino.INDEX(url)
-
-elif mode=='mykinoGenres':
-        print ""+url
-        mykino.GENRES()
-
-elif mode=='mykinoFilter':
-        print ""+url
-        mykino.FILTER(url)
-
-elif mode=='mykinoSearch':
-        print ""+url
-        mykino.SEARCH()
-
-elif mode=='mykinoVideoLinks':
-        print ""+url
-        mykino.VIDEOLINKS(name,url,thumb)
-
-elif mode=='mykinoSeries':
-        print ""+url
-        mykino.SERIES()
-
-elif mode=='mykinoSeriesGenres':
-        print ""+url
-        mykino.SERIESGENRES()
-
-elif mode=='mykinoSeriesIndex':
-        print ""+url
-        mykino.SERIESINDEX(url)
-
-elif mode=='mykinoSeriesSeason':
-        print ""+url
-        mykino.SERIESSEASON(url,thumb)
-
-elif mode=='mykinoSeriesSeries':
-        print ""+url
-        mykino.SERIESSERIES(name,url,thumb)
-
-elif mode=='mykinoSeriesLinks':
-        print ""+url
-        mykino.SERIESLINKS(name, url,thumb)
-
-#FreeOMovie Modes_______________________________________________________________
-elif mode=='freeOMovieCategories':
-        print ""+url
-        freeomovie.CATEGORIES()
-
-elif mode=='freeOMovieGenres':
-        print ""+url
-        freeomovie.GENRES()
-
-elif mode=='freeOMovieSearch':
-        print ""+url
-        freeomovie.SEARCH()
-
-elif mode=='freeOMovieIndex':
-        print ""+url
-        freeomovie.INDEX(url)
-
-elif mode=='freeOMovieVideoLinks':
-        print ""+url
-        freeomovie.VIDEOLINKS(name,url,thumb)
-
-#pornhive
-elif mode=='pornhiveCategories':
-        print ""+url
-        pornhive.CATEGORIES()
-elif mode=='pornhiveIndex':
-        print ""+url
-        pornhive.INDEX(url)
-elif mode=='pornhiveVideoLinks':
-        print ""+url
-        pornhive.VIDEOLINKS(name,url,thumb)
-elif mode=='pornhivePlayLinks':
-        print ""+url
-        pornhive.PLAYLINKS(name,url,thumb)
-elif mode=='pornhiveSearch':
-        print ""+url
-        pornhive.SEARCH()
-        
-# spankbang
-elif mode=='spankbangCategories':
-        print ""+url
-        spankbang.CATEGORIES()
-
-elif mode=='spankbangIndex':
-        print ""+url
-        spankbang.INDEX(url)
-
-elif mode=='spankbangGenres':
-        print ""+url
-        spankbang.GENRES()
-
-elif mode=='spankbangFilter':
-        print ""+url
-        spankbang.FILTER(url)
-
-elif mode=='spankbangSearch':
-        print ""+url
-        spankbang.SEARCH()
-
-elif mode=='spankbangVideoLinks':
-        print ""+url
-        spankbang.VIDEOLINKS(name,url,thumb)
-#Pornmvz Modes_______________________________________________________________
-elif mode=='pornmvzCategories':
-        print ""+url
-        pornmvz.CATEGORIES()
-
-elif mode=='pornmvzAll':
-        print ""+url
-        pornmvz.CATEGORIES()
-
-elif mode=='pornmvzIndex':
-        print ""+url
-        pornmvz.INDEX(url)
-
-elif mode=='pornmvzAsian':
-        print ""+url
-        pornmvz.CATEGORIES(url)
-
-elif mode=='pornmvzEnglish':
-        print ""+url
-        pornmvz.CATEGORIES()
-
-elif mode=='pornmvzFrench':
-        print ""+url
-        pornmvz.CATEGORIES()
-
-elif mode=='pornmvzGerman':
-        print ""+url
-        pornmvz.CATEGORIES()
-
-elif mode=='pornmvzItalian':
-        print ""+url
-        pornmvz.CATEGORIES()
-
-elif mode=='pornmvzVideoLinks':
-        print ""+url
-        pornmvz.VIDEOLINKS(name,url,thumb)
-elif mode=='pornmvzSearch':
-        print ""+url
-        pornmvz.SEARCH()
-#paradisehill modes__________________________________________________________________
-elif mode=='paradisehillCategories':
-        print ""+url
-        paradisehill.CATEGORIES()
-
-elif mode=='paradisehillIndex':
-        print ""+url
-        paradisehill.INDEX(url)
-
-elif mode=='paradisehillGenres':
-        print ""+url
-        paradisehill.GENRES()
-
-elif mode=='paradisehillSearch':
-        print ""+url
-        paradisehill.SEARCH()
-
-elif mode=='paradisehillVideoLinks':
-        print ""+url
-        paradisehill.VIDEOLINKS(name,url,thumb)
-
-xbmcplugin.endOfDirectory(int(sys.argv[1]))
+else:
+    #Default modes
+    if mode==None or url==None or len(url)<1:
+            print ""
+            CATEGORIES()
+    
+    elif mode=='addFavorite':
+            print ""+url
+            main.addFavorite()
+    
+    elif mode=='removeFavorite':
+            print ""+url
+            main.removeFavorite()
+    
+    elif mode=='getFavorites':
+            print ""+url
+            main.getFavorites(url)
+    
+    elif mode=='favorites':
+            print ""+url
+            FAVORITES()
+            
+    elif mode=='movieSections':
+            print ""+url
+            MOVIESECTIONS()
+    
+    elif mode=='tvSections':
+            print ""+url
+            TVSECTIONS()
+    
+    elif mode=='docSections':
+            print ""+url
+            DOCSECTIONS()
+    
+    elif mode=='hdSections':
+            print ""+url
+            HDMOVIESECTIONS()
+    
+    elif mode=='masterSearch':
+            print ""+url
+            MASTERSEARCH()
+    
+    elif mode=='collectiveSearch':
+            print ""+url
+            COLLECTIVESEARCH(name)
+    
+    elif mode=='masterPornSearch':
+            print ""+url
+            MASTERPORNSEARCH()
+    
+    elif mode=='adultSections':
+            print ""+url
+            ADULT()
+    
+    elif mode=='cartoonSections':
+            print ""+url
+            CARTOONSECTIONS()
+    
+    elif mode=='animeSections':
+            print ""+url
+            ANIMESECTIONS()
+    
+    #Main modes_____________________________________________________________________
+    elif mode=='resolve':
+            print ""+url
+            main.RESOLVE(name,url,thumb)
+    
+    # szenestreams modules
+    elif mode=='szenestreamsCategories':
+            print ""+url
+            szenestreams.CATEGORIES()
+    
+    elif mode=='szenestreamsIndex':
+            print ""+url
+            szenestreams.INDEX(url)
+    
+    elif mode=='szenestreamsGenres':
+            print ""+url
+            szenestreams.GENRES()
+    
+    elif mode=='szenestreamsFilter':
+            print ""+url
+            szenestreams.FILTER(url)
+    
+    elif mode=='szenestreamsSearch':
+            print ""+url
+            szenestreams.SEARCH()
+    
+    elif mode=='szenestreamsVideoLinks':
+            print ""+url
+            szenestreams.VIDEOLINKS(name,url,thumb)
+    
+    # mykino modules
+    elif mode=='mykinoCategories':
+            print ""+url
+            mykino.CATEGORIES()
+    
+    elif mode=='mykinoIndex':
+            print ""+url
+            mykino.INDEX(url)
+    
+    elif mode=='mykinoGenres':
+            print ""+url
+            mykino.GENRES()
+    
+    elif mode=='mykinoFilter':
+            print ""+url
+            mykino.FILTER(url)
+    
+    elif mode=='mykinoSearch':
+            print ""+url
+            mykino.SEARCH()
+    
+    elif mode=='mykinoVideoLinks':
+            print ""+url
+            mykino.VIDEOLINKS(name,url,thumb)
+    
+    elif mode=='mykinoSeries':
+            print ""+url
+            mykino.SERIES()
+    
+    elif mode=='mykinoSeriesGenres':
+            print ""+url
+            mykino.SERIESGENRES()
+    
+    elif mode=='mykinoSeriesIndex':
+            print ""+url
+            mykino.SERIESINDEX(url)
+    
+    elif mode=='mykinoSeriesSeason':
+            print ""+url
+            mykino.SERIESSEASON(url,thumb)
+    
+    elif mode=='mykinoSeriesSeries':
+            print ""+url
+            mykino.SERIESSERIES(name,url,thumb)
+    
+    elif mode=='mykinoSeriesLinks':
+            print ""+url
+            mykino.SERIESLINKS(name, url,thumb)
+    
+    #FreeOMovie Modes_______________________________________________________________
+    elif mode=='freeOMovieCategories':
+            print ""+url
+            freeomovie.CATEGORIES()
+    
+    elif mode=='freeOMovieGenres':
+            print ""+url
+            freeomovie.GENRES()
+    
+    elif mode=='freeOMovieSearch':
+            print ""+url
+            freeomovie.SEARCH()
+    
+    elif mode=='freeOMovieIndex':
+            print ""+url
+            freeomovie.INDEX(url)
+    
+    elif mode=='freeOMovieVideoLinks':
+            print ""+url
+            freeomovie.VIDEOLINKS(name,url,thumb)
+    
+    #pornhive
+    elif mode=='pornhiveCategories':
+            print ""+url
+            pornhive.CATEGORIES()
+    elif mode=='pornhiveIndex':
+            print ""+url
+            pornhive.INDEX(url)
+    elif mode=='pornhiveVideoLinks':
+            print ""+url
+            pornhive.VIDEOLINKS(name,url,thumb)
+    elif mode=='pornhivePlayLinks':
+            print ""+url
+            pornhive.PLAYLINKS(name,url,thumb)
+    elif mode=='pornhiveSearch':
+            print ""+url
+            pornhive.SEARCH()
+            
+    # spankbang
+    elif mode=='spankbangCategories':
+            print ""+url
+            spankbang.CATEGORIES()
+    
+    elif mode=='spankbangIndex':
+            print ""+url
+            spankbang.INDEX(url)
+    
+    elif mode=='spankbangGenres':
+            print ""+url
+            spankbang.GENRES()
+    
+    elif mode=='spankbangFilter':
+            print ""+url
+            spankbang.FILTER(url)
+    
+    elif mode=='spankbangSearch':
+            print ""+url
+            spankbang.SEARCH()
+    
+    elif mode=='spankbangVideoLinks':
+            print ""+url
+            spankbang.VIDEOLINKS(name,url,thumb)
+    #Pornmvz Modes_______________________________________________________________
+    elif mode=='pornmvzCategories':
+            print ""+url
+            pornmvz.CATEGORIES()
+    
+    elif mode=='pornmvzAll':
+            print ""+url
+            pornmvz.CATEGORIES()
+    
+    elif mode=='pornmvzIndex':
+            print ""+url
+            pornmvz.INDEX(url)
+    
+    elif mode=='pornmvzAsian':
+            print ""+url
+            pornmvz.CATEGORIES(url)
+    
+    elif mode=='pornmvzEnglish':
+            print ""+url
+            pornmvz.CATEGORIES()
+    
+    elif mode=='pornmvzFrench':
+            print ""+url
+            pornmvz.CATEGORIES()
+    
+    elif mode=='pornmvzGerman':
+            print ""+url
+            pornmvz.CATEGORIES()
+    
+    elif mode=='pornmvzItalian':
+            print ""+url
+            pornmvz.CATEGORIES()
+    
+    elif mode=='pornmvzVideoLinks':
+            print ""+url
+            pornmvz.VIDEOLINKS(name,url,thumb)
+    elif mode=='pornmvzSearch':
+            print ""+url
+            pornmvz.SEARCH()
+    #paradisehill modes__________________________________________________________________
+    elif mode=='paradisehillCategories':
+            print ""+url
+            paradisehill.CATEGORIES()
+    
+    elif mode=='paradisehillIndex':
+            print ""+url
+            paradisehill.INDEX(url)
+    
+    elif mode=='paradisehillGenres':
+            print ""+url
+            paradisehill.GENRES()
+    
+    elif mode=='paradisehillSearch':
+            print ""+url
+            paradisehill.SEARCH()
+    
+    elif mode=='paradisehillVideoLinks':
+            print ""+url
+            paradisehill.VIDEOLINKS(name,url,thumb)
+    
+    xbmcplugin.endOfDirectory(int(sys.argv[1]))
