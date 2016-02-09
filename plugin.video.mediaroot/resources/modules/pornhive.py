@@ -36,7 +36,9 @@ def INDEX(url):
         if settings.getSetting('nextpagetop') == 'true':
             main.addDir('[COLOR blue]Next Page[/COLOR]',next_page,'pornhiveIndex',artwork + '/main/next.png')
     for url,name,thumbnail in match:
-        try: 
+        try:
+            if "///" in thumbnail:
+                thumbnail = "http://" + thumbnail.split("///")[1]
             main.addDir(name,url,'pornhiveVideoLinks',thumbnail)
         except:
             continue
