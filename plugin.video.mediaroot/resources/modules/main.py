@@ -56,6 +56,7 @@ settings = xbmcaddon.Addon(id=addon_id)
 artwork = 'https://raw.githubusercontent.com/schmidthans/mediafountain/master/plugin.video.mediaroot/resources/artwork'
 grab=metahandlers.MetaData()
 net = Net()
+net.set_user_agent('Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:43.0) Gecko/20100101 Firefox/43.0')
 
 def resolvable(url):
     status = False
