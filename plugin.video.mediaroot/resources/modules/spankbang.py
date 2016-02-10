@@ -34,7 +34,7 @@ def INDEX(url):
         else:
             issearch=False
         link = net.http_GET(url).content
-        match=re.compile('<div class="video-item".+?<a href="(.+?)".+?<img src="(.+?)".*?title="(.+?)".+?fa-clock-o"></i>\s(.+?)<',re.S).findall(link)
+        match=re.compile('<div class="video-item".+?<a href="(.+?)".+?<img src="(.+?)".*?alt="(.+?)".+?fa-clock-o"></i>\s(.+?)<',re.S).findall(link)
         np=re.compile('<span class="status">page.+?<a href="(.+?)" class="next">Next page', re.S).findall(link)
         if issearch:
             main.addDir('[COLOR blue]filter >20min[/COLOR]',url,'spankbangFilter',artwork + '/main/filter.png')
@@ -63,11 +63,11 @@ def INDEX(url):
 
 def VIDEOLINKS(name,url,thumb):
         link = net.http_GET(url).content
-        stream_quality=re.findall('<span class="ft-button ft-light-blue tt q_(.+?)"', link)
+        stream_quality=re.search('<li class="[qb]_(\d+)p"', link)
         stream_id=re.search("var stream_id\s+=\s+'(.+?)';", link)
         stream_key=re.search("var stream_key\s+=\s+'(.+?)';", link)
         if stream_quality and stream_id and stream_key:
-            url= 'http://spankbang.com/_%s/%s/title/%s__mp4' % (stream_id.group(1), stream_key.group(1), stream_quality[0])
+            url= 'http://spankbang.com/_%s/%s/title/%s__mp4' % (stream_id.group(1), stream_key.group(1), stream_quality.group(1))
             try:
                 main.RESOLVE(name,url,thumb)
             except:
