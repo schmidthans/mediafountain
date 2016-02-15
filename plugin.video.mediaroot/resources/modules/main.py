@@ -725,42 +725,49 @@ def RESOLVE(name,url,thumb):
 
 #Used to resolve urls that urlresolver doesn't support________________________________________________________________________________
 def OPENLOAD(url):
-    result = net.http_GET(url).content
+    link = url
+    embed = re.search('http[s]?://openload\...\/f\/(.*?)\/', link, re.S)
+    if embed:
+        link = 'https://openload.co/embed/' + embed.group(1)
+    result = net.http_GET(link).content
     parse = re.search('videocontainer.*?text/javascript">(.*?);</script>', result, re.S)
     if parse:
+        dataout = ''
         todecode = parse.group(1).split(';')
         todecode = todecode[-1].replace(' ','')
 
         code = {
-        "(ﾟДﾟ) [1]" : "f",
-        "(ﾟДﾟ) [c]" : "c",
-        "(ﾟДﾟ) [constructor]" : '"',
-        "(ﾟДﾟ)[ﾟoﾟ]" : "o",
-        "(ﾟДﾟ) [return]" : "\\",
-        "(ﾟДﾟ) [ ﾟΘﾟ]" : "_",
-        "(ﾟДﾟ) [ ﾟΘﾟﾉ]" : "b",
-        "(ﾟДﾟ) [ ﾟωﾟﾉ]" : "a",
-        "(ﾟДﾟ) [ ﾟДﾟﾉ]" : "e",
-        "(ﾟДﾟ) [ﾟｰﾟﾉ]" : "d",
-        "(ﾟДﾟ) ['_']"  : "Function()",
-        "(ﾟДﾟ)[ﾟεﾟ]": "/",
-        "(ﾟｰﾟ)": "4",
-        "(o^_^o)": "9",
-        "c": "0",
-        "o": "3",
-        "ol": "undefined",
-        "oﾟｰﾟo": "u",
-        "ﾟoﾟ": "constructor",
-        "(ﾟΘﾟ)": "1",
-        "ﾟεﾟ": "return",
-        "ﾟωﾟﾉ": "undefined",
-        "_": "3",
-        }
+            "(ﾟДﾟ) [1]" : "f",
+            "(ﾟДﾟ) [c]" : "c",
+            "(ﾟДﾟ) [constructor]" : '"',
+            "(ﾟДﾟ)[ﾟoﾟ]" : "o",
+            "(ﾟДﾟ) [return]" : "\\",
+            "(ﾟДﾟ) [ ﾟΘﾟ]" : "_",
+            "(ﾟДﾟ) [ ﾟΘﾟﾉ]" : "b",
+            "(ﾟДﾟ) [ ﾟωﾟﾉ]" : "a",
+            "(ﾟДﾟ) [ ﾟДﾟﾉ]" : "e",
+            "(ﾟДﾟ) [ﾟｰﾟﾉ]" : "d",
+            "(ﾟДﾟ) ['_']"  : "Function()",
+            "(ﾟДﾟ)[ﾟεﾟ]": "/",
+            "(ﾟｰﾟ)": "4",
+            "(c^_^o)": "0",
+            "(o^_^o)": "3",
+            "c": "0",
+            "o": "3",
+            "ol": "undefined",
+            "oﾟｰﾟo": "u",
+            "ﾟoﾟ": "constructor",
+            "(ﾟΘﾟ)": "1",
+            "ﾟεﾟ": "return",
+            "ﾟωﾟﾉ": "undefined",
+            "_": "3",
+            }
+
         try:
             todecode = todecode.encode('utf-8')
             for searchword,isword in code.iteritems():
                 todecode = todecode.replace(searchword,isword)
-
+            todecode = todecode.replace('!+[]','1').replace('-~','1+').replace('[]','0')
             todecode = re.sub(r'\((\d)\+(\d)\)', lambda m: '{0}'.format(int(m.group(1)) + int(m.group(2))), todecode.replace(" ","")).replace(" ","")
             todecode = re.sub(r'\((\d)\^(\d)\^(\d)\)', lambda m: '{0}'.format(int(m.group(1)) ^ int(m.group(2))^ int(m.group(3))), todecode).replace(" ","")
             todecode = re.sub(r'\((\d)\+(\d)\)', lambda m: '{0}'.format(int(m.group(1)) + int(m.group(2))), todecode).replace(" ","")
@@ -768,12 +775,18 @@ def OPENLOAD(url):
             todecode = re.sub(r'\((\d)\+(\d)\+(\d)\)', lambda m: '{0}'.format(int(m.group(1)) + int(m.group(2))+ int(m.group(3))), todecode).replace(" ","")
             todecode = re.sub(r'\((\d)\-(\d)\+(\d)\)', lambda m: '{0}'.format(int(m.group(1)) - int(m.group(2))+ int(m.group(3))), todecode).replace(" ","")
             todecode = re.sub(r'\((\d)\+(\d)\-(\d)\)', lambda m: '{0}'.format(int(m.group(1)) + int(m.group(2))- int(m.group(3))), todecode).replace(" ","")
-            thestring =  re.search("return3(.*?)\d\)", todecode.replace("+","")).group(1).replace("/","\\")
+
+            thestring =  re.search("return3(.*?)\'\d\'", todecode.replace("+","").replace(")","").replace("(",""))
             if thestring:
-                thestring =  unicode(thestring, 'unicode-escape').replace('\\/','/').replace(' ','')
-                url = re.search('window.vr="(http.*?)"', thestring)
+                items = thestring.group(1).split("/")
+                for charcode in items:
+                    if charcode:
+                        if int(charcode) < 256:
+                            dataout += chr(int(charcode, 8))
+                url = re.search('window.vr=\'(http.*?)\'', dataout)
                 if url:
                     return str(url.group(1))
+
         except Exception as e:
             print "ERROR parsing openload code"
 
