@@ -1,3 +1,6 @@
+Version 0.3.7
+openload fixed
+
 Version 0.3.6
 spankbank fixed
 pornhive fixed thumbnails
