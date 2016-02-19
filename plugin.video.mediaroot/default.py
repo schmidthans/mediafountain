@@ -3,7 +3,7 @@
 import urllib,urllib2,re,xbmcplugin,xbmcgui,sys,xbmc,urlresolver,xbmcaddon,os
 from resources.modules import main
 from resources.modules import mykino, szenestreams
-from resources.modules import freeomovie, pornhive,pornmvz,paradisehill,spankbang
+from resources.modules import freeomovie,pornhive,pornmvz,paradisehill,spankbang,qwertty
 from resources.modules.config import cConfig
 
 addon_id = 'plugin.video.mediaroot'
@@ -102,6 +102,8 @@ def ADULT():
                         main.addDir('Paradisehill','none','paradisehillCategories',artwork + '/adult/paradisehill.png')
                 if settings.getSetting('spankbang') == 'true':
                         main.addDir('Spankbang','none','spankbangCategories',artwork + '/adult/spankbang.png')
+                if settings.getSetting('qwertty') == 'true':
+                        main.addDir('Qwertty','none','qwerttyCategories',artwork + '/adult/qwertty.png')
         else:
                 notice = xbmcgui.Dialog().ok('Wrong Password','The password you entered is incorrect')
 
@@ -196,6 +198,7 @@ year = addon.queries.get('year', '')
 season = addon.queries.get('season', '')
 episode = addon.queries.get('episode', '')
 show = addon.queries.get('show', '')
+post = addon.queries.get('post', '')
 types = addon.queries.get('types', '')
 
 print "Mode is: "+str(mode)
@@ -379,6 +382,23 @@ else:
             print ""+url
             freeomovie.VIDEOLINKS(name,url,thumb)
     
+    #qwertty
+    elif mode=='qwerttyCategories':
+            print ""+url
+            qwertty.CATEGORIES()
+    elif mode=='qwerttyIndex':
+            print ""+url
+            qwertty.INDEX(url, post)
+    elif mode=='qwerttyVideoLinks':
+            print ""+url
+            qwertty.VIDEOLINKS(name,url,thumb)
+    elif mode=='qwerttyPlayLinks':
+            print ""+url
+            qwertty.PLAYLINKS(name,url,thumb)
+    elif mode=='qwerttySearch':
+            print ""+url
+            qwertty.SEARCH()
+
     #pornhive
     elif mode=='pornhiveCategories':
             print ""+url
@@ -395,7 +415,7 @@ else:
     elif mode=='pornhiveSearch':
             print ""+url
             pornhive.SEARCH()
-            
+
     # spankbang
     elif mode=='spankbangCategories':
             print ""+url

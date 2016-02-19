@@ -43,6 +43,8 @@
 
 <setting id="spankbang" type="bool" label="Spankbang" default="true" enable="!eq(-8,false)"/>
 
+<setting id="qwertty" type="bool" label="Qwertty" default="true" enable="!eq(-9,false)"/>
+
 <setting id="searchporn" type="bool" label="[COLOR blue]Master Porn Search[/COLOR]" default="true"/>
 
 
