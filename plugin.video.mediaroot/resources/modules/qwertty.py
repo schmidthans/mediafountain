@@ -30,7 +30,7 @@ def CATEGORIES():
                 Url = base_url + Url
                 main.addDir(Title, Url +'/','qwerttyIndex',artwork + '/main/video.png')
 
-def INDEX(url, post=None):
+def INDEX(url):
     if type(url) == str:
         if re.match("\('http", url):
             url=re.compile("\('(.*?)', (.*?\}), '(.*?)'").findall(url)
@@ -101,5 +101,8 @@ def SEARCH():
         INDEX(urldata)
 
 def MASTERSEARCH(search):
-    url = base_url + '/en/search/0?title=' + search
-    INDEX(url)
+    search = search.replace(' ','+')
+    url = base_url
+    post = {'do': 'search', 'subaction': 'search', 'story': search}
+    urldata = (url,{'do': 'search', 'subaction': 'search', 'story': search, 'search_start': '1', 'result_from': '1'}, search)
+    INDEX(urldata)

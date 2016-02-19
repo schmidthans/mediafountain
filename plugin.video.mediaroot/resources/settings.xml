@@ -45,6 +45,8 @@
 
 <setting id="qwertty" type="bool" label="Qwertty" default="true" enable="!eq(-9,false)"/>
 
+<setting id="xxxstreams" type="bool" label="XXXStreams" default="true" enable="!eq(-10,false)"/>
+
 <setting id="searchporn" type="bool" label="[COLOR blue]Master Porn Search[/COLOR]" default="true"/>
 
 

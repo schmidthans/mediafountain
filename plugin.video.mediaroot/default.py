@@ -3,7 +3,7 @@
 import urllib,urllib2,re,xbmcplugin,xbmcgui,sys,xbmc,urlresolver,xbmcaddon,os
 from resources.modules import main
 from resources.modules import mykino, szenestreams
-from resources.modules import freeomovie,pornhive,pornmvz,paradisehill,spankbang,qwertty
+from resources.modules import freeomovie,pornhive,pornmvz,paradisehill,spankbang,qwertty,xxxstreams
 from resources.modules.config import cConfig
 
 addon_id = 'plugin.video.mediaroot'
@@ -104,6 +104,8 @@ def ADULT():
                         main.addDir('Spankbang','none','spankbangCategories',artwork + '/adult/spankbang.png')
                 if settings.getSetting('qwertty') == 'true':
                         main.addDir('Qwertty','none','qwerttyCategories',artwork + '/adult/qwertty.png')
+                if settings.getSetting('xxxstreams') == 'true':
+                        main.addDir('XXXStreams','none','xxxstreamsCategories',artwork + '/adult/xxxstreams.png')
         else:
                 notice = xbmcgui.Dialog().ok('Wrong Password','The password you entered is incorrect')
 
@@ -388,7 +390,7 @@ else:
             qwertty.CATEGORIES()
     elif mode=='qwerttyIndex':
             print ""+url
-            qwertty.INDEX(url, post)
+            qwertty.INDEX(url)
     elif mode=='qwerttyVideoLinks':
             print ""+url
             qwertty.VIDEOLINKS(name,url,thumb)
@@ -398,6 +400,23 @@ else:
     elif mode=='qwerttySearch':
             print ""+url
             qwertty.SEARCH()
+
+    #xxxstreams
+    elif mode=='xxxstreamsCategories':
+            print ""+url
+            xxxstreams.CATEGORIES()
+    elif mode=='xxxstreamsIndex':
+            print ""+url
+            xxxstreams.INDEX(url)
+    elif mode=='xxxstreamsVideoLinks':
+            print ""+url
+            xxxstreams.VIDEOLINKS(name,url,thumb)
+    elif mode=='xxxstreamsPlayLinks':
+            print ""+url
+            xxxstreams.PLAYLINKS(name,url,thumb)
+    elif mode=='xxxstreamsSearch':
+            print ""+url
+            xxxstreams.SEARCH()
 
     #pornhive
     elif mode=='pornhiveCategories':
