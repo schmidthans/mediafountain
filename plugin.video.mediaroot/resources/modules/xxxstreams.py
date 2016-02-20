@@ -54,10 +54,8 @@ def VIDEOLINKS(name,url,thumb):
             hoster1 = re.match('http[s]?://(.+?)/', hoster)
             if hoster1:
                 hoster = hoster1.group(1)
-                print "####### hoster:"+hoster
             if not re.search('(Download|SPEEDVID|moviecloud|datafile)', hoster):
                 hoster = hoster.replace('Streaming ','')
-                print "###url,hoster"+url+"##"+hoster
                 main.addDir(hoster,url,'xxxstreamsPlayLinks',thumb)
 
 def PLAYLINKS(name,url,thumb):
