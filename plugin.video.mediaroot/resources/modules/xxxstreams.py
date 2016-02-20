@@ -27,7 +27,7 @@ def INDEX(url):
     link = net.http_GET(url).content
     match=re.compile('content-area">(.+?)wp-pagenavi', re.S).findall(link)
     if match:
-        match1=re.compile('data-lazy-src="(.+?)".+?<a href="(.*?)".+?data-item_title="(.+?)"', re.S).findall(match[0])
+        match1=re.compile('data-lazy-src="(.+?)".+?<a href="(http[s]?://.*?)["|#].+?data-item_title="(.+?)"', re.S).findall(match[0])
         lastpage=re.compile('<span class=\'pages\'>Page (\d+) of (\d+)<', re.S).findall(link)
         np=re.compile('<link rel="next" href="(.+?)"').findall(link)
         if len(np) > 0:
@@ -49,9 +49,13 @@ def VIDEOLINKS(name,url,thumb):
     link = net.http_GET(url).content
     match=re.compile('<div class="entry-content">(.+?)</br>', re.S).findall(link)
     if match:
-        match1=re.compile('<br /> <a href="(http.*?)" target="_blank">(.+?)<', re.S).findall(match[0])
-        for url,hoster in match1:
-            if not re.match('Download', hoster):
+        match1=re.compile('(<br />|<p>) <a href="(http[s]?://[^www.pix].*?)" target="_blank">([^<]+?)<', re.S).findall(match[0])
+        for x,url,hoster in match1:
+            hoster1 = re.match('http[s]?://(.+?)/', hoster)
+            if hoster1:
+                hoster = hoster1.group(1)
+                print "####### hoster:"+hoster
+            if not re.search('(Download|SPEEDVID|moviecloud|datafile)', hoster):
                 hoster = hoster.replace('Streaming ','')
                 print "###url,hoster"+url+"##"+hoster
                 main.addDir(hoster,url,'xxxstreamsPlayLinks',thumb)
