@@ -223,6 +223,9 @@ def getHost(url, disk=''):
 def nameCleaner(name):
        name = name.replace('&#8211;','')
        name = name.replace("&#8217;","")
+       name = name.replace("&#8230;","")
+       #name = name.replace("’","")
+       
        return(name)
     
 #Functions for handling favorites_____________________________________________________________________________________________________________________________
