@@ -48,24 +48,19 @@ def VIDEOLINKS(name,url,thumb):
         match=re.compile('class="itemFullText">(.+?)id="content_right"', re.S).findall(link)
         match1=re.compile('(http[s]?://(.*?)\/.*?)[\'|"|\&|<]').findall(match[0])
         for url,hoster in match1:
-                url = str(url).replace('&#038;','&').replace('&amp;','&')
-                hmf = urlresolver.HostedMediaFile(url)
-                if main.resolvable(url):
-                        streamcounter += 1
-                        newList =[]
-                        if re.match('http://flashx.tv/embed-', url):
-			  media_id = re.compile('http://((?:www.|play.)?flashx.tv)/(?:embed-|dl\?)?([0-9a-zA-Z]+)').search(url)
-			  if media_id:
-			    url = 'http://www.flashx.tv/%s.html' % media_id.group(2)
-                        newList.append((name, url, hoster,'resolve',thumb))
+            url = str(url).replace('&#038;','&').replace('&amp;','&')
+            if main.resolvable(url):
+                #hmf = urlresolver.HostedMediaFile(url)
+                streamcounter += 1
+                newList.append((name, url, hoster,'resolve',thumb))
         if streamcounter == 1:
             main.RESOLVE(newList[0][0],newList[0][1],newList[0][3])
         elif newList:
             for name,url, hoster, resolve,thumb in newList:
                 try:
-                        main.addHDir(name,url,resolve,thumb)
+                    main.addHDir(name,url,resolve,thumb)
                 except:
-                        pass
+                    pass
 
 def SEARCH():
         search = ''
