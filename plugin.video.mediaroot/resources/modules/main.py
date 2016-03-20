@@ -740,36 +740,30 @@ def OPENLOAD(url):
         todecode = todecode[-1].replace(' ','')
 
         code = {
-            "(ﾟДﾟ) [1]" : "f",
-            "(ﾟДﾟ) [c]" : "c",
-            "(ﾟДﾟ) [constructor]" : '"',
             "(ﾟДﾟ)[ﾟoﾟ]" : "o",
             "(ﾟДﾟ) [return]" : "\\",
             "(ﾟДﾟ) [ ﾟΘﾟ]" : "_",
             "(ﾟДﾟ) [ ﾟΘﾟﾉ]" : "b",
-            "(ﾟДﾟ) [ ﾟωﾟﾉ]" : "a",
-            "(ﾟДﾟ) [ ﾟДﾟﾉ]" : "e",
             "(ﾟДﾟ) [ﾟｰﾟﾉ]" : "d",
-            "(ﾟДﾟ) ['_']"  : "Function()",
             "(ﾟДﾟ)[ﾟεﾟ]": "/",
-            "(ﾟｰﾟ)": "4",
+            "(oﾟｰﾟo)": '(u)',
+            "3ﾟｰﾟ3": "u",
             "(c^_^o)": "0",
             "(o^_^o)": "3",
-            "c": "0",
-            "o": "3",
-            "ol": "undefined",
-            "oﾟｰﾟo": "u",
-            "ﾟoﾟ": "constructor",
-            "(ﾟΘﾟ)": "1",
             "ﾟεﾟ": "return",
             "ﾟωﾟﾉ": "undefined",
             "_": "3",
+            "(ﾟДﾟ)['0']" : "c",
+            "c": "0",
+            "(ﾟΘﾟ)": "1",
+            "o": "3",
+            "(ﾟｰﾟ)": "4",
             }
-
         try:
             todecode = todecode.encode('utf-8')
             for searchword,isword in code.iteritems():
                 todecode = todecode.replace(searchword,isword)
+
             todecode = todecode.replace('!+[]','1').replace('-~','1+').replace('[]','0')
             todecode = re.sub(r'\((\d)\+(\d)\)', lambda m: '{0}'.format(int(m.group(1)) + int(m.group(2))), todecode.replace(" ","")).replace(" ","")
             todecode = re.sub(r'\((\d)\^(\d)\^(\d)\)', lambda m: '{0}'.format(int(m.group(1)) ^ int(m.group(2))^ int(m.group(3))), todecode).replace(" ","")
@@ -778,20 +772,49 @@ def OPENLOAD(url):
             todecode = re.sub(r'\((\d)\+(\d)\+(\d)\)', lambda m: '{0}'.format(int(m.group(1)) + int(m.group(2))+ int(m.group(3))), todecode).replace(" ","")
             todecode = re.sub(r'\((\d)\-(\d)\+(\d)\)', lambda m: '{0}'.format(int(m.group(1)) - int(m.group(2))+ int(m.group(3))), todecode).replace(" ","")
             todecode = re.sub(r'\((\d)\+(\d)\-(\d)\)', lambda m: '{0}'.format(int(m.group(1)) + int(m.group(2))- int(m.group(3))), todecode).replace(" ","")
-
-            thestring =  re.search("return3(.*?)\'\d\'", todecode.replace("+","").replace(")","").replace("(",""))
-            if thestring:
-                items = thestring.group(1).split("/")
-                for charcode in items:
-                    if charcode:
-                        if int(charcode) < 256:
-                            dataout += chr(int(charcode, 8))
-                url = re.search('window.vr=\'(http.*?)\'', dataout)
-                if url:
-                    return str(url.group(1))
-
-        except Exception as e:
+        except:
             print "ERROR parsing openload code"
+        thestring =  re.search("return3(.*?)\'\d\'", todecode.replace("+","").replace(")","").replace("(",""))
+        if thestring:
+            items = thestring.group(1).split("/")
+            for charcode in items:
+                try:
+                    if charcode:
+                        try:
+                            if charcode == 'u01c3':
+                                dataout += '!'
+                            elif int(charcode) < 256:
+                                dataout += chr(int(charcode, 8))
+                        except:
+                            dataout += charcode
+                except:
+                    dataout += charcode
+            dataout = openloadDecode(dataout) 
+            url = re.search('\s(http.*?)[\?|\}]', dataout)
+            if url:
+                return str(url.group(1))
+
+def openloadDecode(data):
+    newstr = ''
+    i = 0
+    while i < len(data):
+        if data[i] != "!":
+            newstr += data[i]
+            i += 1
+        else:
+            code = data[i+2:data.find(")", i)].split(',')
+            if re.match('\d' ,code[0]):
+                radix = int(code[0])+27
+                num = int(code[1])
+                decodestr = ""
+                while num > 0:  
+                    decodestr = "0123456789abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz"[num % radix] + decodestr
+                    num /= radix
+                newstr += decodestr
+                i = data.find(")", i)+1
+            else:
+                i = data.find(")", i)+1
+    return newstr.replace('"','').replace('+','')
 
 def OTHER_RESOLVERS(url):
     if 'uploadcrazy' in url:
