@@ -22,7 +22,7 @@ def CATEGORIES():
     main.addDir('Fetish', base_url +'/tags/Fetish/','qwerttyIndex',artwork + '/main/video.png')
     main.addDir('Fisting', base_url +'/tags/Fisting/','qwerttyIndex',artwork + '/main/video.png')
     link = net.http_GET(base_url).content
-    match=re.compile('main-menu clearfix(.+?)</ul>', re.S).findall(link)
+    match=re.compile('Select categories(.+?)</nav>', re.S).findall(link)
     if match:
         match1=re.compile('<li><a href="(/.+?)/">(.+?)</a></li>', re.S).findall(match[0])
         if len(match1) > 0:
@@ -46,7 +46,7 @@ def INDEX(url):
         link = net.http_POST(url[0], url[1]).content
         np=re.compile('pnext">.*? href="(#)">(.+?)<').findall(link)
         lastpage=re.compile(' href="#">(\d+)<', re.S).findall(link)
-    match=re.compile('<div class="short-item">.+?href="(.*?)".+?<img src="(.+?)"\salt="(.+?)"', re.S).findall(link)
+    match=re.compile('class="movie-img.*?<img src="(.+?)"\salt="(.+?)".*?data-link="(.*?)"', re.S).findall(link)
     if len(np) > 0:
         if type(url) == str:
             page = np[0][1]
@@ -56,7 +56,7 @@ def INDEX(url):
             next_page = (base_url, {'do': 'search', 'subaction': 'search', 'story': url[1]['story'], 'search_start': str(page), 'result_from': str(int(url[1]['result_from'])+12)}, url[1]['story'])
         if settings.getSetting('nextpagetop') == 'true':
                 main.addDir('[COLOR blue]Next Page %s/%s[/COLOR]' % (str(page),str(lastpage[-1])),next_page,'qwerttyIndex',artwork + '/main/next.png')
-    for urllink,thumbnail,name in match:
+    for thumbnail,name,urllink in match:
         try:
             if not re.match("http.+?", thumbnail):
                 thumbnail = base_url + thumbnail
@@ -71,11 +71,10 @@ def INDEX(url):
 
 def VIDEOLINKS(name,url,thumb):
     link = net.http_GET(url).content
-    match=re.compile('<div class="full-text clearfix desc-text">(.+?)</div>', re.S).findall(link)
+    match=re.compile('full-text clearfix(.+?)</div>', re.S).findall(link)
     if match:
         match1=re.compile('<a href="(http[s]?://(.*?)/.*?)"\s+target="_blank', re.S).findall(match[0])
         for url,hoster in match1:
-            print "###url,hoster"+url+"##"+hoster
             main.addDir(hoster,url,'qwerttyPlayLinks',thumb)
 
 def PLAYLINKS(name,url,thumb):
