@@ -35,7 +35,8 @@ def INDEX(url):
             issearch=False
         link = net.http_GET(url).content
         match=re.compile('<div class="video-item".+?<a href="(.+?)".+?<img src="(.+?)".*?alt="(.+?)".+?fa-clock-o"></i>\s(.+?)<',re.S).findall(link)
-        np=re.compile('<span class="status">page.+?<a href="(.+?)" class="next">Next page', re.S).findall(link)
+        lastpage=re.compile('>(\d+)</a></li>', re.S).findall(link)
+        np=re.compile('class="pagination">.+?class="next"><a href="(.+?)"', re.S).findall(link)
         if issearch:
             main.addDir('[COLOR blue]filter >20min[/COLOR]',url,'spankbangFilter',artwork + '/main/filter.png')
         if len(np) > 0:
@@ -45,8 +46,12 @@ def INDEX(url):
                     page = str(int(pageparse.group(1))+1)
                 else:
                     page = '2'
+                if lastpage:
+                    lastpage = "/" + str(lastpage[-1])
+                else:
+                    lastpage = ''
                 if settings.getSetting('nextpagetop') == 'true':
-                        main.addDir('[COLOR blue] Next Page %s [/COLOR]' % page,next_page,'spankbangIndex',artwork + '/main/next.png')
+                    main.addDir('[COLOR blue]Next Page %s%s[/COLOR]' % (page,lastpage),next_page,'spankbangIndex',artwork + '/main/next.png')
         if match:
             for url,thumbnail,name, lenght in match:
                 name=name.encode('utf-8') + " " + str(lenght) + "min"
