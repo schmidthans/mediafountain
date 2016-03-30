@@ -16,28 +16,39 @@ def CATEGORIES():
     main.addDir('Full Movies',base_url +'/full-movies-streaming/page/0','xxxstreamsIndex',artwork + '/main/recentvideos.png')
     main.addDir('HD',base_url +'/tag/hd/page/0','xxxstreamsIndex',artwork + '/main/recentvideos.png')
     link = net.http_GET(base_url).content
-    match=re.compile('div class="tagcloud">(.+?)</aside>', re.S).findall(link)
-    if match:
-        match1=re.compile('<a href=\'(.+?)\'.*?>(.+?)<', re.S).findall(match[0])
-        if len(match1) > 0:
-            for (Url, Title) in match1:
-                Title = Title.encode('utf-8')
-                main.addDir(Title, Url,'xxxstreamsIndex',artwork + '/main/video.png')
+    match1=re.compile('menu-item menu-item-type-(taxonomy|custom).*?<a href=[\'|"](http://xxxstreams.org.+?)[\'|"]\s*>(.+?)<', re.S).findall(link)
+    if len(match1) > 0:
+        cat = []
+        for (x, Url, Title) in match1:
+            Title = Title.encode('utf-8')
+            cat.append((Title, Url,'xxxstreamsIndex',artwork + '/main/video.png'))
+        cat.sort(key=lambda t : t[0].lower())
+        for item in cat:
+            main.addDir(item[0],item[1],item[2],item[3])
 
 def INDEX(url):
     next_page = ''
     link = net.http_GET(url).content
     match=re.compile('content-area">(.+?)<h1 class="screen-reader-text"', re.S).findall(link)
     if match:
-        match1=re.compile('"entry-title"><a href="(.+?)" rel="bookmark">(.*?)<.*?<img src="(http.+?)"', re.S).findall(link)
+        match1=re.compile('"entry-title"><a href="(.+?)" rel="bookmark">(.*?)<.*?<div class="entry-(summary|content)">\s*<p>(.+?)</div>', re.S).findall(link)
         lastpage=re.compile('<a class=\'page-numbers\' href=.+?>(\d+)<', re.S).findall(link)
-        np=re.compile('<a class="next page-numbers" href="(.+?page/(.+?))/"').findall(link)
+        np=re.compile('<a class="next page-numbers" href="(.+?page/(.+?))/.*?"').findall(link)
         if len(np) > 0:
             next_page = np[0][0]
             if settings.getSetting('nextpagetop') == 'true':
-                main.addDir('[COLOR blue]Next Page %s/%s[/COLOR]' % (str(np[0][1]),str(lastpage[1])),next_page,'xxxstreamsIndex',artwork + '/main/next.png')
-        for url,name,thumbnail in match1:
+                if lastpage:
+                    lastpage = "/" + str(lastpage[-1])
+                else:
+                    lastpage = ''
+                main.addDir('[COLOR blue]Next Page %s%s[/COLOR]' % (str(np[0][1]),lastpage),next_page,'xxxstreamsIndex',artwork + '/main/next.png')
+        for url,name,x,thumbnail in match1:
             try:
+                thumbnail = re.search('<img src="(http.+?)"', thumbnail)
+                if thumbnail:
+                    thumbnail = thumbnail.group(1)
+                else:
+                    thumbnail = None
                 name = name.encode('utf-8')
                 main.addDir(name,url,'xxxstreamsVideoLinks',thumbnail)
             except:
