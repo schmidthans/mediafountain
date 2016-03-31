@@ -24,7 +24,7 @@ def CATEGORIES():
             cat.append((Title, Url,'xxxstreamsIndex',artwork + '/main/video.png'))
         cat.sort(key=lambda t : t[0].lower())
         for item in cat:
-            main.addDir(item[0],item[1],item[2],item[3])
+            main.addDir(*item)
 
 def INDEX(url):
     next_page = ''
