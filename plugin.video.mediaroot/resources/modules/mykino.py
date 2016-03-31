@@ -14,12 +14,12 @@ def CATEGORIES():
         main.addDir('Kinofilme',base_url +'/aktuelle-kinofilme','mykinoIndex',artwork + '/main/movie.png')
         main.addDir('Neue Filme',base_url +'/filme/','mykinoIndex',artwork + '/main/recentvideos.png')
         main.addDir('Genres','none','mykinoGenres',artwork + '/main/categories.png')
-        main.addDir('Search','none','mykinoSearch',artwork + '/main/search.png')
+        main.addDir('Suche','none','mykinoSearch',artwork + '/main/search.png')
 
 def SERIES():
         main.addDir('Neue Serien',base_url +'/serien/','mykinoSeriesIndex',artwork + '/main/recentvideos.png')
         main.addDir('Genres Serien','none','mykinoSeriesGenres',artwork + '/main/categories.png')
-        main.addDir('Search','none','mykinoSearch',artwork + '/main/search.png')#TODO series und movies in der suche unterscheiden
+        main.addDir('Suche','none','mykinoSearch',artwork + '/main/search.png')#TODO series und movies in der suche unterscheiden
 
 def SERIESGENRES():
     url = base_url
@@ -143,16 +143,15 @@ def INDEX(url):
         if issearch:
             parse=re.compile('<div class="pagenavigation ">(.+?)>Weiter', re.S).search(link)
             if parse:
-                np=re.compile('<a href="(.+?)"', re.S).findall(parse.group(1))
-                next_page = np[-1]
-                print "##next page", np[-1]
-            #np=re.compile('<div class="pagenavigation ">.+?onclick="javascript:list_submit\((\d+?)\); return\(false\)" href="#">Weiter</a>', re.S).findall(link)
-            #next_page = urlparts[0] + "#" + np[0]
+                np=re.compile('id="nextlink" onclick="javascript:list_submit\((.+?)\)', re.S).findall(parse.group(1))
+                if np:
+                    next_page = urlparts[0] + "#" + np[0]
         else:
             parse=re.compile('<div class="pagenavigation ">(.+?)>Weiter', re.S).search(link)
             if parse:
                 np=re.compile('<a href="(.+?)"', re.S).findall(parse.group(1))
-                next_page = np[-1]
+                if np:
+                    next_page = np[0]
         if len(np) > 0:
                 if settings.getSetting('nextpagetop') == 'true':
                         main.addDir('[COLOR blue]Next Page[/COLOR]',next_page,'mykinoIndex',artwork + '/main/next.png')
@@ -187,7 +186,7 @@ def FILTER(url):
 
 def SEARCH():
         search = ''
-        keyboard = xbmc.Keyboard(search,'Search')
+        keyboard = xbmc.Keyboard(search,'Suche')
         keyboard.doModal()
         if keyboard.isConfirmed():
                 search = keyboard.getText()
