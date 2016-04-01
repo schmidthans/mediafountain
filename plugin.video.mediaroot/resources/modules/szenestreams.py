@@ -12,9 +12,9 @@ settings = main.settings
 
 def CATEGORIES():
         main.addDir('Kinofilme',base_url +'/publ/aktuelle_kinofilme/1','szenestreamsIndex',artwork + '/main/video.png')
-        main.addDir('Last Added',base_url + '/publ','szenestreamsIndex',artwork + '/main/recentvideos.png')
+        main.addDir('Neue Filme',base_url + '/publ','szenestreamsIndex',artwork + '/main/recentvideos.png')
         main.addDir('Genres','none','szenestreamsGenres',artwork + '/main/categories.png')
-        main.addDir('Search','none','szenestreamsSearch',artwork + '/main/search.png')
+        main.addDir('Suche','none','szenestreamsSearch',artwork + '/main/search.png')
 
 def GENRES():
     main.addDir('720p',base_url +'/publ/720p/26','szenestreamsIndex',artwork + '/main/video.png')
@@ -106,7 +106,7 @@ def VIDEOLINKS(name,url,thumb):
 
 def SEARCH():
         search = ''#
-        keyboard = xbmc.Keyboard(search,'Search')
+        keyboard = xbmc.Keyboard(search,'Suche')
         keyboard.doModal()
         if keyboard.isConfirmed():
                 search = keyboard.getText()
