@@ -6,16 +6,16 @@ from t0mm0.common.net import Net
 net = Net()
 
 artwork = main.artwork
-base_url = 'http://www.paradisehill.tv'
+base_url = 'http://en.paradisehill.cc'
 settings = main.settings
 
 def CATEGORIES():
         main.addDir('Genres','none','paradisehillGenres',artwork + '/main/categories.png')
-        main.addDir('Newest',base_url +'/en/','paradisehillIndex',artwork + '/main/recentvideos.png')
+        main.addDir('Newest',base_url +'/porn/','paradisehillIndex',artwork + '/main/recentvideos.png')
         main.addDir('Search',base_url +'/?cat=4362','paradisehillSearch',artwork + '/main/search.png')
 
 def GENRES():
-    url = base_url + '/en/'
+    url = base_url + '/porn/'
     link = net.http_GET(url).content
     match=re.compile('<h2>Categories</h2>(.+?)<script type="', re.S).findall(link)
     genre=re.compile('\shref="(.+?)"\stitle="(.+?)".+?src="(.+?)".+?Films:(.+?)<', re.S).findall(match[0])
@@ -55,7 +55,7 @@ def INDEX(url):
             for x,url,name,thumbnail in match:
                 name=name.encode('utf-8')
                 url = base_url + url
-                thumbnail="http://www.paradisehill.tv"  + thumbnail
+                thumbnail="http://en.paradisehill.cc"  + thumbnail
                 try: 
                     main.addDir(name,url,'paradisehillVideoLinks',thumbnail)
                 except:
@@ -91,7 +91,7 @@ def VIDEOLINKS(name,url,thumb):
 
                         if main.resolvable(url):
                                 try:
-                                        url = url +'|Referer=http://www.paradisehill.tv/static/flowplayer/flowplayer.commercial-3.2.18.swf'
+                                        url = url +'|Referer=http://en.paradisehill.cc/static/flowplayer/flowplayer.commercial-3.2.18.swf'
                                         main.addHDir(cdname,url,'resolve',thumb, disk=discno)
                                 except:
                                         continue
@@ -103,5 +103,5 @@ def SEARCH():
         if keyboard.isConfirmed():
                 search = keyboard.getText()
                 search = re.sub(' ','+', search)
-                url = base_url + '/en/search_results.html?search=' + search
+                url = base_url + '/search_results.html?search=' + search
                 INDEX(url)
