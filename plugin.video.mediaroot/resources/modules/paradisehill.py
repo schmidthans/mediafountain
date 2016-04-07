@@ -12,7 +12,7 @@ settings = main.settings
 def CATEGORIES():
         main.addDir('Genres','none','paradisehillGenres',artwork + '/main/categories.png')
         main.addDir('Newest',base_url +'/porn/','paradisehillIndex',artwork + '/main/recentvideos.png')
-        main.addDir('Search',base_url +'/?cat=4362','paradisehillSearch',artwork + '/main/search.png')
+        main.addDir('Search',base_url ,'paradisehillSearch',artwork + '/main/search.png')
 
 def GENRES():
     url = base_url + '/porn/'
@@ -103,5 +103,5 @@ def SEARCH():
         if keyboard.isConfirmed():
                 search = keyboard.getText()
                 search = re.sub(' ','+', search)
-                url = base_url + '/search_results.html?search=' + search
+                url = base_url + '/search_results/?search=' + search
                 INDEX(url)
