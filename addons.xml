@@ -2,7 +2,7 @@
 <addons>
 <addon id="plugin.video.mediaroot"
        name="MediaRoot"
-       version="0.3.9"
+       version="0.4.0"
        provider-name="MediaFountain, based on Plugin by o9r1sh">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>

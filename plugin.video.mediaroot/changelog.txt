@@ -1,3 +1,9 @@
+Version 0.4.0
+spankbang pageing fixed
+xxxstreams fixed
+mykino pageing fixed
+paradisehill fixed
+
 Version 0.3.9
 openload fixed
 qwertty fixed
