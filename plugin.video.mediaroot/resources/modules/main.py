@@ -697,6 +697,8 @@ def RESOLVE(name,url,thumb):
     host = ''
     if 'openload' in url:
         url = OPENLOAD(url)
+    elif 'videowood' in url:
+        url = VIDEOWOOD(url)
     elif hmf:
         url = urlresolver.resolve(url)
         host = hmf.get_host()
@@ -727,6 +729,81 @@ def RESOLVE(name,url,thumb):
         xbmc.Player ().play(url, liz, False)
 
 #Used to resolve urls that urlresolver doesn't support________________________________________________________________________________
+def VIDEOWOOD(url):
+    link = url
+    if re.search('videowood\.tv/embed', url, re.S):
+        link = url
+    else:
+        id = re.search('videowood\.tv/.*?/(\w+)', url)
+        if id:
+            link = "http://videowood.tv/embed/%s" % id.group(1)
+    result = net.http_GET(link).content
+    parse = re.search('(ωﾟ.*?);</script>', result.encode('utf-8'), re.S)
+    if parse:
+        todecode = parse.group(1).split(';')
+        todecode = todecode[-1].replace(' ','')
+
+        code = {
+            "(ﾟДﾟ)[ﾟoﾟ]" : "o",
+            "(ﾟДﾟ) [return]" : "\\",
+            "(ﾟДﾟ) [ ﾟΘﾟ]" : "_",
+            "(ﾟДﾟ) [ ﾟΘﾟﾉ]" : "b",
+            "(ﾟДﾟ) [ﾟｰﾟﾉ]" : "d",
+            "(ﾟДﾟ)[ﾟεﾟ]": "/",
+            "(oﾟｰﾟo)": '(u)',
+            "3ﾟｰﾟ3": "u",
+            "(c^_^o)": "0",
+            "(o^_^o)": "3",
+            "ﾟεﾟ": "return",
+            "ﾟωﾟﾉ": "undefined",
+            "_": "3",
+            "(ﾟДﾟ)['0']" : "c",
+            "c": "0",
+            "(ﾟΘﾟ)": "1",
+            "o": "3",
+            "(ﾟｰﾟ)": "4",
+            }
+        cryptnumbers = []
+        for searchword,isword in code.iteritems():
+            todecode = todecode.replace(searchword,isword)
+        for i in range(len(todecode)):
+            if todecode[i] == '/' and todecode[i+1] == '+':
+                for j in range(i+2, len(todecode)):
+                    if todecode[j] == '+' and todecode[j+1] == '/':
+                        cryptnumbers.append(todecode[i+1:j])
+                        i = j
+                        break
+                        break
+        finalstring = ''
+        for item in cryptnumbers:
+            chrnumber = '\\'
+            jcounter = 0
+            while jcounter < len(item):
+                clipcounter = 0
+                if item[jcounter] == '(':
+                    jcounter +=1
+                    startclip = 0
+                    clipcounter += 1
+                    for k in range(jcounter, len(item)):
+                        if clipcounter != 0 and k <= len(item)-2:
+                            if item[k] == '(':
+                                clipcounter += 1
+                            elif item[k] == ')':
+                                clipcounter -= 1
+                        else:
+                            jcounter = 0
+                            if k >= len(item)-2:
+                                k +=1
+                            chrnumber = chrnumber + str(eval(item[startclip:k]))
+                            item = item[startclip+k:]
+                            break
+                else:
+                    jcounter +=1
+            finalstring = finalstring + chrnumber.decode('unicode-escape')
+        url = re.search('=\s*(\'|")(.*?)$', finalstring)
+        if url:
+            return(url.group(2).encode('utf-8'))
+
 def OPENLOAD(url):
     link = url
     embed = re.search('http[s]?://openload\...\/f\/(.*?)\/', link, re.S)
