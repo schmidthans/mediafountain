@@ -767,9 +767,9 @@ def VIDEOWOOD(url):
         for searchword,isword in code.iteritems():
             todecode = todecode.replace(searchword,isword)
         for i in range(len(todecode)):
-            if todecode[i] == '/' and todecode[i+1] == '+':
+            if todecode[i:i+2] == '/+':
                 for j in range(i+2, len(todecode)):
-                    if todecode[j] == '+' and todecode[j+1] == '/':
+                    if todecode[j:j+2] == '+/':
                         cryptnumbers.append(todecode[i+1:j])
                         i = j
                         break
@@ -782,20 +782,16 @@ def VIDEOWOOD(url):
                 clipcounter = 0
                 if item[jcounter] == '(':
                     jcounter +=1
-                    startclip = 0
                     clipcounter += 1
                     for k in range(jcounter, len(item)):
-                        if clipcounter != 0 and k <= len(item)-2:
-                            if item[k] == '(':
-                                clipcounter += 1
-                            elif item[k] == ')':
-                                clipcounter -= 1
-                        else:
+                        if item[k] == '(':
+                            clipcounter += 1
+                        elif item[k] == ')':
+                            clipcounter -= 1
+                        if clipcounter == 0:
                             jcounter = 0
-                            if k >= len(item)-2:
-                                k +=1
-                            chrnumber = chrnumber + str(eval(item[startclip:k]))
-                            item = item[startclip+k:]
+                            chrnumber = chrnumber + str(eval(item[:k+1]))
+                            item = item[k+1:]
                             break
                 else:
                     jcounter +=1
