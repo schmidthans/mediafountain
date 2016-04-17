@@ -38,7 +38,10 @@ def INDEX(url):
         lastpage=re.compile('>(\d+)</a></li>', re.S).findall(link)
         np=re.compile('class="pagination">.+?class="next"><a href="(.+?)"', re.S).findall(link)
         if issearch:
-            main.addDir('[COLOR blue]filter >20min[/COLOR]',url,'spankbangFilter',artwork + '/main/filter.png')
+            if '?length=long' in url:
+                pass
+            else:
+                main.addDir('[COLOR blue]filter >20min[/COLOR]',url,'spankbangFilter',artwork + '/main/filter.png')
         if len(np) > 0:
                 next_page = base_url + np[0]
                 pageparse = re.search('http://spankbang.com/.*?/(\d+)/', url)
