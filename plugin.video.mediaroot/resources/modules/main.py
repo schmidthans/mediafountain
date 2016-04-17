@@ -726,7 +726,7 @@ def RESOLVE(name,url,thumb):
     else:
         #xbmc.Notification(header,message["################# ERROR",5,None])
         xbmc.sleep(1000)
-        xbmc.Player ().play(url, liz, False)
+        xbmc.Player().play(url, liz, False)
 
 #Used to resolve urls that urlresolver doesn't support________________________________________________________________________________
 def VIDEOWOOD(url):

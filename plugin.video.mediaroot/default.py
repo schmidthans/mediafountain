@@ -2,7 +2,7 @@
 
 import urllib,urllib2,re,xbmcplugin,xbmcgui,sys,xbmc,urlresolver,xbmcaddon,os
 from resources.modules import main
-from resources.modules import mykino, szenestreams
+from resources.modules import mykino, szenestreams, video2k
 from resources.modules import freeomovie,pornhive,pornmvz,paradisehill,spankbang,qwertty,xxxstreams
 from resources.modules.config import cConfig
 
@@ -63,6 +63,8 @@ def MOVIESECTIONS():
                 main.addDir('MyKino Movie','none','mykinoCategories',artwork + '/movies/mykino.png')
         if settings.getSetting('szenestreams') == 'true':
                 main.addDir('SzeneStreams Movie','none','szenestreamsCategories',artwork + '/movies/mykino.png')
+        if settings.getSetting('video2kmovie') == 'true':
+                main.addDir('Video2k Movie','none','video2kCategories',artwork + '/movies/mykino.png')
 
 def HDMOVIESECTIONS():
         pass
@@ -126,6 +128,11 @@ def MASTERSEARCH():
         if settings.getSetting('mykinomovie') == 'true':
                 try:
                         threads.append(main.Thread(mykino.MASTERSEARCH(search)))
+                except:
+                        pass
+        if settings.getSetting('mykinomovie') == 'true':
+                try:
+                        threads.append(main.Thread(video2k.MASTERSEARCH(search)))
                 except:
                         pass
         [i.start() for i in threads]
@@ -362,7 +369,32 @@ else:
     elif mode=='mykinoSeriesLinks':
             print ""+url
             mykino.SERIESLINKS(name, url,thumb)
+
+    # video2k modules
+    elif mode=='video2kCategories':
+            print ""+url
+            video2k.CATEGORIES()
     
+    elif mode=='video2kIndex':
+            print ""+url
+            video2k.INDEX(url)
+    
+    elif mode=='video2kGenres':
+            print ""+url
+            video2k.GENRES()
+    
+    elif mode=='video2kFilter':
+            print ""+url
+            video2k.FILTER(url)
+    
+    elif mode=='video2kSearch':
+            print ""+url
+            video2k.SEARCH()
+    
+    elif mode=='video2kVideoLinks':
+            print ""+url
+            video2k.VIDEOLINKS(name,url,thumb)
+
     #FreeOMovie Modes_______________________________________________________________
     elif mode=='freeOMovieCategories':
             print ""+url
