@@ -4,7 +4,8 @@ import urlresolver
 import json
 
 from t0mm0.common.net import Net
-mycookiefile = '/tmp/' + 'video2k.cookies'
+mycookiefile = xbmc.translatePath('special://temp/')+ 'video2k.cookies'
+open(mycookiefile, 'a').close()
 net = Net(cookie_file=mycookiefile)
 
 artwork = main.artwork
