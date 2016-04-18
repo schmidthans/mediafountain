@@ -36,54 +36,29 @@ def GENRES():
 def INDEX(url):
         next_page = ''
         np = {}
-        if re.match("http", url):
-            issearch=False
-        else:
-            issearch=True
-        if issearch:
-             urlparts = url.split('#')
-             search_start = urlparts[1]
-             result_from = str(int(urlparts[1])*10+1)
-             dataPost = {'do':'search','subaction':'search','story':urlparts[0], 'search_start':search_start, 'result_from':result_from}
-             link=net.http_POST(base_url+'/index.php', dataPost).content
-        else:
-             link = net.http_GET(url).content
-        print "#### link"
-        print url
-        #print link
-        match=re.compile('<a title="(.+?)"\s*href=\'[^\']*?-(\d+)\.html\'.*?<img src=\'(.+?)\'',re.S).findall(link)
-        if issearch:
-            parse=re.compile('<div class="pagenavigation ">(.+?)>Weiter', re.S).search(link)
-            if parse:
-                np=re.compile('id="nextlink" onclick="javascript:list_submit\((.+?)\)', re.S).findall(parse.group(1))
-                lp=re.compile('>(\d+)<').findall(parse.group(1))
-                if np:
-                    next_page = urlparts[0][0] + "#" + np[0]
-                    page = str(int(np[0][1])/20+1)
-                if lp:
-                    lastpage = "/" + str(lp[-1])
+        link = net.http_GET(url).content
+        match=re.compile('<div onmouseover=["\']autoplay.+?.*?<img src=["\'](.+?)["\'].*?\s*href=["\'][^\'"]*?-(\d+)\.html["\']>(.*?)<',re.S).findall(link)
+        parse=re.compile('class=\'pagination\'>(.+?)</div></div>', re.S).search(link)
+        if parse:
+            np=re.compile('<a href="([^<]+?per_page=(\d+))">Next').findall(parse.group(1))
+            if np:
+                if re.match('http.*', np[0][0]):
+                    next_page = np[0][0].replace("&amp;", "&")
                 else:
-                    lastpage = ""
-        else:
-            parse=re.compile('class=\'pagination\'>(.+?)</div></div>', re.S).search(link)
-            if parse:
-                np=re.compile('<a href="([^<]+?per_page=(\d+))">Next').findall(parse.group(1))
-                if np:
                     next_page = base_url + "/" + np[0][0].replace("&amp;", "&")
-                    page = str(int(np[0][1])/20+1)
-                lp=re.compile('=(\d+)">Last').findall(parse.group(1))
-                if not lp:
-                    lp=re.compile('per_page=(\d+)">\d').findall(parse.group(1))
-                if lp:
-                    lastpage = "/" + str(int(lp[-1])/20+1)
-                else:
-                    lastpage = ""
+                page = str(int(np[0][1])/20+1)
+            lp=re.compile('=(\d+)">Last').findall(parse.group(1))
+            if not lp:
+                lp=re.compile('per_page=(\d+)">\d').findall(parse.group(1))
+            if lp:
+                lastpage = "/" + str(int(lp[-1])/20+1)
+            else:
+                lastpage = ""
         if len(np) > 0:
                 if settings.getSetting('nextpagetop') == 'true':
                         main.addDir('[COLOR blue]Next Page %s%s[/COLOR]' % (page,lastpage),next_page,'video2kIndex',artwork + '/main/next.png')
         if match:
-            for name,url,thumbnail in match:
-                name=name#.encode('utf-8')
+            for thumbnail,url,name in match:
                 url = 'http://video2k.is/?c=ajax&m=movieStreams2&id=' + url + '&lang=2&links=250'
                 try:
                     main.addDir(name,url,'video2kVideoLinks',thumbnail)
@@ -96,13 +71,10 @@ def INDEX(url):
 
 def VIDEOLINKS(name,url,thumb):
         link = net.http_GET(url).content
-        print "######### links"
-        #print link
-        match=re.compile('</li></a><a (id=\'.*?|)title=\'(.*?)\'.*?(http.*?)["|\'].*?class=\'url\'>(.+?)<', re.S).findall(link)
-        for x, dateinfo,url,hoster in match:
-            name = hoster + " " + dateinfo
-            print url.encode('utf-8')
-            main.addHDir(name, url,'resolve',thumb)
+        match=re.compile('</li></a><a .*?(http.*?)["|\'].*?class=["|\']url["|\']>(.+?)<.*?title=["|\']added.*?>(.*?)<', re.S).findall(link)
+        for url,name,added in match:
+            name = name.split('.')[0].ljust(25) + "  Linkalter: " + added.replace('days','Tage').replace('weeks','Wochen').replace('months','Monate').replace('year','Jahre')
+            main.addDir(name, url,'resolve',thumb)
 
 def FILTER(url):
         url = url + '?length=long'
@@ -115,9 +87,9 @@ def SEARCH():
         if keyboard.isConfirmed():
                 search = keyboard.getText()
                 search = re.sub(' ','+', search)
-                url = search+"#"+'0'
+                url =  base_url +"/?keyword=" + search + "&c=movie&m=filter"
                 INDEX(url)
 
 def MASTERSEARCH(search):
-        url = search+"#"+'0'
+        url = base_url +"/?keyword=" + search + "&c=movie&m=filter"
         INDEX(url)
