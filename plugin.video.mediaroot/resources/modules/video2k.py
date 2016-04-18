@@ -73,8 +73,9 @@ def VIDEOLINKS(name,url,thumb):
         link = net.http_GET(url).content
         match=re.compile('</li></a><a .*?(http.*?)["|\'].*?class=["|\']url["|\']>(.+?)<.*?title=["|\']added.*?>(.*?)<', re.S).findall(link)
         for url,name,added in match:
-            name = name.split('.')[0].ljust(25) + "  Linkalter: " + added.replace('days','Tage').replace('weeks','Wochen').replace('months','Monate').replace('year','Jahre')
-            main.addDir(name, url,'resolve',thumb)
+            if main.resolvable(url):
+                name = name.split('.')[0].ljust(25) + "  Linkalter: " + added.replace('days','Tage').replace('weeks','Wochen').replace('months','Monate').replace('year','Jahre')
+                main.addDir(name, url,'resolve',thumb)
 
 def FILTER(url):
         url = url + '?length=long'

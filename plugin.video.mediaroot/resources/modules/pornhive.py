@@ -12,6 +12,14 @@ settings = main.settings
 def CATEGORIES():
     main.addDir('Search','none','pornhiveSearch',artwork + '/main/search.png')
     main.addDir('Newest Videos',base_url +'/en/page/0','pornhiveIndex',artwork + '/main/recentvideos.png')
+    main.addDir('StreamCloud',  base_url + '/en/hoster/streamcloud','pornhiveIndex',artwork + '/main/video.png')
+    main.addDir('FlashX',  base_url + '/en/hoster/flashx','pornhiveIndex',artwork + '/main/video.png')
+    main.addDir('NowVideo',  base_url + '/en/hoster/nowvideo','pornhiveIndex',artwork + '/main/video.png')
+    main.addDir('PrimeShare',  base_url + '/en/hoster/primeshare','pornhiveIndex',artwork + '/main/video.png')
+    main.addDir('SockShare',  base_url + '/en/hoster/sockshare','pornhiveIndex',artwork + '/main/video.png')
+    main.addDir('Openload',  base_url + '/en/hoster/openload','pornhiveIndex',artwork + '/main/video.png')
+    main.addDir('UserPorn',  base_url + '/en/hoster/userporn','pornhiveIndex',artwork + '/main/video.png')
+    main.addDir('Vidxden',  base_url + '/en/hoster/vidxden','pornhiveIndex',artwork + '/main/video.png')
     link = net.http_GET(base_url).content
     match=re.compile('All\sTitles(.+?)</ul>', re.S).findall(link)
     if match:
@@ -52,7 +60,7 @@ def VIDEOLINKS(name,url,thumb):
     match1=re.compile('<li\sid="link-(.+?)".+?Watch\sit\son\s+(.+?)\s', re.S).findall(link)
     for url,hoster in match1:
         url = "%s/en/out/%s" % (base_url, url)
-        main.addDir(name,url,'pornhivePlayLinks',thumb)
+        main.addDir(hoster,url,'pornhivePlayLinks',thumb)
 
 def PLAYLINKS(name,url,thumb):
     link = net.http_HEAD(url)
@@ -60,7 +68,7 @@ def PLAYLINKS(name,url,thumb):
         link = link.get_url()
         if main.resolvable(link):
             try:
-                main.addHDir(name,link,'resolve',thumb)
+                main.RESOLVE(name,link,thumb)
             except:
                 pass
         else:
@@ -70,7 +78,7 @@ def PLAYLINKS(name,url,thumb):
             hmf = urlresolver.HostedMediaFile(link)
             if main.resolvable(link):
                 try:
-                    main.addHDir(name,link,'resolve',thumb)
+                    main.RESOLVE(name,link,thumb)
                 except:
                     pass
 
