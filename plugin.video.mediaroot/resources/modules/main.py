@@ -55,8 +55,7 @@ settings = xbmcaddon.Addon(id=addon_id)
 #artwork = addon.get_path()+'/artwork'
 artwork = 'https://raw.githubusercontent.com/schmidthans/mediafountain/master/plugin.video.mediaroot/resources/artwork'
 grab=metahandlers.MetaData()
-net = Net()
-net.set_user_agent('Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:43.0) Gecko/20100101 Firefox/43.0')
+net = Net(user_agent='Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:43.0) Gecko/20100101 Firefox/43.0')
 
 def resolvable(url):
     status = False
@@ -802,70 +801,77 @@ def VIDEOWOOD(url):
 
 def OPENLOAD(url):
     link = url
-    embed = re.search('http[s]?://openload\...\/f\/(.*?)\/', link, re.S)
+    embed = re.search('http[s]?://openload\...\/f\/(.*?)(\/.*?)?$', link, re.S)
     if embed:
         link = 'https://openload.co/embed/' + embed.group(1)
     result = net.http_GET(link).content
-    parse = re.search('videocontainer.*?text/javascript">(.*?);</script>', result, re.S)
-    if parse:
-        dataout = ''
-        todecode = parse.group(1).split(';')
-        todecode = todecode[-1].replace(' ','')
+    number=re.compile('<script type="text/javascript">[\w]+\s+=\s+(\d+)\s+-\s+(\d+)').findall(result)
+    if number:
+        pos = int(number[0][0]) - int(number[0][1])
+        parse=re.compile('type="text/javascript">(.'+u'ωﾟ' + '.+?);</script>', re.S).findall(result)
+        if parse and len(parse) > pos:
+            item = parse[pos]
+            dataout = ''
+            todecode = item.split(';')
+            todecode = todecode[-1].replace(' ','')
+            code = {
+                "(ﾟДﾟ)[ﾟoﾟ]" : "o",
+                "(ﾟДﾟ) [return]" : "\\",
+                "(ﾟДﾟ) [ ﾟΘﾟ]" : "_",
+                "(ﾟДﾟ) [ ﾟΘﾟﾉ]" : "b",
+                "(ﾟДﾟ) [ﾟｰﾟﾉ]" : "d",
+                "(ﾟДﾟ)[ﾟεﾟ]": "/",
+                "(oﾟｰﾟo)": '(u)',
+                "3ﾟｰﾟ3": "u",
+                "(c^_^o)": "0",
+                "(o^_^o)": "3",
+                "ﾟεﾟ": "return",
+                "ﾟωﾟﾉ": "undefined",
+                "_": "3",
+                "(ﾟДﾟ)['0']" : "c",
+                "c": "0",
+                "(ﾟΘﾟ)": "1",
+                "o": "3",
+                "(ﾟｰﾟ)": "4",
+                }
+            try:
+                todecode = todecode.encode('utf-8')
+                for searchword,isword in code.iteritems():
+                    todecode = todecode.replace(searchword,isword)
 
-        code = {
-            "(ﾟДﾟ)[ﾟoﾟ]" : "o",
-            "(ﾟДﾟ) [return]" : "\\",
-            "(ﾟДﾟ) [ ﾟΘﾟ]" : "_",
-            "(ﾟДﾟ) [ ﾟΘﾟﾉ]" : "b",
-            "(ﾟДﾟ) [ﾟｰﾟﾉ]" : "d",
-            "(ﾟДﾟ)[ﾟεﾟ]": "/",
-            "(oﾟｰﾟo)": '(u)',
-            "3ﾟｰﾟ3": "u",
-            "(c^_^o)": "0",
-            "(o^_^o)": "3",
-            "ﾟεﾟ": "return",
-            "ﾟωﾟﾉ": "undefined",
-            "_": "3",
-            "(ﾟДﾟ)['0']" : "c",
-            "c": "0",
-            "(ﾟΘﾟ)": "1",
-            "o": "3",
-            "(ﾟｰﾟ)": "4",
-            }
-        try:
-            todecode = todecode.encode('utf-8')
-            for searchword,isword in code.iteritems():
-                todecode = todecode.replace(searchword,isword)
-
-            todecode = todecode.replace('!+[]','1').replace('-~','1+').replace('[]','0')
-            todecode = re.sub(r'\((\d)\+(\d)\)', lambda m: '{0}'.format(int(m.group(1)) + int(m.group(2))), todecode.replace(" ","")).replace(" ","")
-            todecode = re.sub(r'\((\d)\^(\d)\^(\d)\)', lambda m: '{0}'.format(int(m.group(1)) ^ int(m.group(2))^ int(m.group(3))), todecode).replace(" ","")
-            todecode = re.sub(r'\((\d)\+(\d)\)', lambda m: '{0}'.format(int(m.group(1)) + int(m.group(2))), todecode).replace(" ","")
-            todecode = re.sub(r'\((\d)\-(\d)\)', lambda m: '{0}'.format(int(m.group(1)) - int(m.group(2))), todecode).replace(" ","")
-            todecode = re.sub(r'\((\d)\+(\d)\+(\d)\)', lambda m: '{0}'.format(int(m.group(1)) + int(m.group(2))+ int(m.group(3))), todecode).replace(" ","")
-            todecode = re.sub(r'\((\d)\-(\d)\+(\d)\)', lambda m: '{0}'.format(int(m.group(1)) - int(m.group(2))+ int(m.group(3))), todecode).replace(" ","")
-            todecode = re.sub(r'\((\d)\+(\d)\-(\d)\)', lambda m: '{0}'.format(int(m.group(1)) + int(m.group(2))- int(m.group(3))), todecode).replace(" ","")
-        except:
-            print "ERROR parsing openload code"
-        thestring =  re.search("return3(.*?)\'\d\'", todecode.replace("+","").replace(")","").replace("(",""))
-        if thestring:
-            items = thestring.group(1).split("/")
-            for charcode in items:
-                try:
-                    if charcode:
-                        try:
-                            if charcode == 'u01c3':
-                                dataout += '!'
-                            elif int(charcode) < 256:
-                                dataout += chr(int(charcode, 8))
-                        except:
-                            dataout += charcode
-                except:
-                    dataout += charcode
-            dataout = openloadDecode(dataout) 
-            url = re.search('\s(http.*?)[\?|\}]', dataout)
-            if url:
-                return str(url.group(1))
+                todecode = todecode.replace('!+[]','1').replace('-~','1+').replace('[]','0')
+                todecode = re.sub(r'\((\d)\+(\d)\)', lambda m: '{0}'.format(int(m.group(1)) + int(m.group(2))), todecode.replace(" ","")).replace(" ","")
+                todecode = re.sub(r'\((\d)\^(\d)\^(\d)\)', lambda m: '{0}'.format(int(m.group(1)) ^ int(m.group(2))^ int(m.group(3))), todecode).replace(" ","")
+                todecode = re.sub(r'\((\d)\+(\d)\)', lambda m: '{0}'.format(int(m.group(1)) + int(m.group(2))), todecode).replace(" ","")
+                todecode = re.sub(r'\((\d)\-(\d)\)', lambda m: '{0}'.format(int(m.group(1)) - int(m.group(2))), todecode).replace(" ","")
+                todecode = re.sub(r'\((\d)\+(\d)\+(\d)\)', lambda m: '{0}'.format(int(m.group(1)) + int(m.group(2))+ int(m.group(3))), todecode).replace(" ","")
+                todecode = re.sub(r'\((\d)\-(\d)\+(\d)\)', lambda m: '{0}'.format(int(m.group(1)) - int(m.group(2))+ int(m.group(3))), todecode).replace(" ","")
+                todecode = re.sub(r'\((\d)\+(\d)\-(\d)\)', lambda m: '{0}'.format(int(m.group(1)) + int(m.group(2))- int(m.group(3))), todecode).replace(" ","")
+            except:
+                print "ERROR parsing openload code"
+            thestring =  re.search("return3(.+?)\'\d\'", todecode.replace("+","").replace(")","").replace("(",""))
+            if thestring:
+                items = thestring.group(1).split("/")
+                for charcode in items:
+                    try:
+                        if charcode:
+                            try:
+                                if charcode == 'u01c3':
+                                    dataout += '!'
+                                elif int(charcode) < 256:
+                                    dataout += chr(int(charcode, 8))
+                            except:
+                                dataout += charcode
+                    except:
+                        dataout += charcode
+                dataout = openloadDecode(dataout)
+                url = re.search('\s(http.+?)\}', dataout)
+                if url:
+                    link = str(url.group(1).encode('utf-8')).replace('https','http')
+                    import requests
+                    user_agent = {'User-agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:43.0) Gecko/20100101 Firefox/43.0'}
+                    response = requests.head(link, allow_redirects=True, headers=user_agent)
+                    return(response.url.encode('utf-8'))
 
 def openloadDecode(data):
     newstr = ''

@@ -55,7 +55,10 @@ def INDEX(url):
              link=net.http_POST(base_url+'/index.php', dataPost).content
         else:
              link = net.http_GET(url).content
-        match=re.compile('<div class="ImgWrapNews"><a href="(.+?.[jpg|png])" class="ulightbox" target="_blank".*?alt="(.+?)".*?></a></div>.*?<a class="newstitl entryLink" <.*?href="(.+?)">',re.S).findall(link)
+#        match=re.compile('<div class="ImgWrapNews"><a href="(.+?.[jpg|png])" class="ulightbox" target="_blank".*?alt="(.+?)".*?></a></div>.*?<a class="newstitl entryLink" <.*?href="(.+?)">',re.S).findall(link)
+        match=re.compile('<div class="ImgWrapNews"><a href="(.+?)".*?(/publ/.+?)">(.+?)</a></b>.*?<div class="MessWrapsNews" align="center"> <div class="MessWrapsNews2" style="height:110px;">(.+?)<',re.S).findall(link)
+
+        #movies = re.findall('<div class="ImgWrapNews"><a href="(.*?)".*?(/publ/.*?)">(.*?)</a></b>.*?<div class="MessWrapsNews" align="center"> <div class="MessWrapsNews2" style="height:110px;">(.*?)<', data, re.S)
 
         if issearch:
                 pass
@@ -81,8 +84,9 @@ def INDEX(url):
                             main.addDir('[COLOR blue]Next Page %s/%s[/COLOR]' % (nextpagestr,str(np[-1])),next_page,'szenestreamsIndex',artwork + '/main/next.png')
 
         if match:
-            for thumbnail,name,url in match:
+            for thumbnail,url,name,h in match:
                 name=name.encode('utf-8')
+                url = 'http://szene-streams.com' + url
                 try: 
                     main.addDir(name,url,'szenestreamsVideoLinks',thumbnail)
                 except:
@@ -99,7 +103,7 @@ def VIDEOLINKS(name,url,thumb):
         link = net.http_GET(url).content
         parse = re.compile('class="eBlock"(.*?)class="MessWrapsNews"', re.S).search(link)
         if parse:
-            match1=re.compile('(http://(?!fs..directupload)(?!szene-streams)(?!www.szene-streams)(?!flash-moviez.ucoz)(?!www.youtube.com)(.*?)\/.*?)[\'|"|\&|<|\s]', re.S).findall(parse.group(1))
+            match1=re.compile('(http[s]?://(?!fs..directupload)(?!szene-streams)(?!www.szene-streams)(?!flash-moviez.ucoz)(?!www.youtube.com)(.*?)\/.*?)[\'|"|\&|<|\s]', re.S).findall(parse.group(1))
             for url, hoster in match1:
                 hoster = hoster.replace('play.','').replace('www.','').replace('embed.','')
                 main.addHDir(name, url,'resolve',thumb)
@@ -119,6 +123,7 @@ def SEARCH():
                 if match:
                     for thumbnail,url,name in match:
                         name=name.encode('utf-8')
+                        url = 'http://szene-streams.com' + url
                         try: 
                             main.addDir(name,url,'szenestreamsVideoLinks',thumbnail)
                         except:
@@ -134,6 +139,7 @@ def MASTERSEARCH(search):
         if match:
             for thumbnail,url,name in match:
                 name=name.encode('utf-8')
+                url = 'http://szene-streams.com' + url
                 try: 
                     main.addDir(name,url,'szenestreamsVideoLinks',thumbnail)
                 except:

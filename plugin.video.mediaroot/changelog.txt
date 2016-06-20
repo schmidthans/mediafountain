@@ -1,3 +1,7 @@
+Version 0.4.3
+openload fixed
+szenestreams fixed
+
 Version 0.4.2
 video2k fixed
 
