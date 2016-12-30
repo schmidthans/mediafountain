@@ -1,3 +1,7 @@
+Version 0.4.5
+fixed parsing
+removed local host resolver
+
 Version 0.4.4
 zip fixed
 
