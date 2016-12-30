@@ -12,14 +12,16 @@ settings = main.settings
 def CATEGORIES():
     main.addDir('Search','none','pornhiveSearch',artwork + '/main/search.png')
     main.addDir('Newest Videos',base_url +'/en/page/0','pornhiveIndex',artwork + '/main/recentvideos.png')
-    main.addDir('StreamCloud',  base_url + '/en/hoster/streamcloud','pornhiveIndex',artwork + '/main/video.png')
-    main.addDir('FlashX',  base_url + '/en/hoster/flashx','pornhiveIndex',artwork + '/main/video.png')
-    main.addDir('NowVideo',  base_url + '/en/hoster/nowvideo','pornhiveIndex',artwork + '/main/video.png')
-    main.addDir('PrimeShare',  base_url + '/en/hoster/primeshare','pornhiveIndex',artwork + '/main/video.png')
-    main.addDir('SockShare',  base_url + '/en/hoster/sockshare','pornhiveIndex',artwork + '/main/video.png')
-    main.addDir('Openload',  base_url + '/en/hoster/openload','pornhiveIndex',artwork + '/main/video.png')
-    main.addDir('UserPorn',  base_url + '/en/hoster/userporn','pornhiveIndex',artwork + '/main/video.png')
-    main.addDir('Vidxden',  base_url + '/en/hoster/vidxden','pornhiveIndex',artwork + '/main/video.png')
+    main.addDir('StreamCloud',  base_url + '/en/hoster/streamcloud.eu','pornhiveIndex',artwork + '/main/video.png')
+    main.addDir('FlashX',  base_url + '/en/hoster/flashx.tv','pornhiveIndex',artwork + '/main/video.png')
+    #main.addDir('NowVideo',  base_url + '/en/hoster/nowvideo.sx','pornhiveIndex',artwork + '/main/video.png')
+    #main.addDir('PrimeShare',  base_url + '/en/hoster/primeshare','pornhiveIndex',artwork + '/main/video.png')
+    #main.addDir('SockShare',  base_url + '/en/hoster/sockshare.tv','pornhiveIndex',artwork + '/main/video.png')
+    main.addDir('Openload',  base_url + '/en/hoster/openload.co','pornhiveIndex',artwork + '/main/video.png')
+    #main.addDir('UserPorn',  base_url + '/en/hoster/userporn','pornhiveIndex',artwork + '/main/video.png')
+    main.addDir('Videomega',  base_url + '/en/hoster/videomega.tv','pornhiveIndex',artwork + '/main/video.png')
+    main.addDir('Videowood',  base_url + '/en/hoster/videowood.tv','pornhiveIndex',artwork + '/main/video.png')
+    #main.addDir('Vidxden',  base_url + '/en/hoster/vidxden.tv','pornhiveIndex',artwork + '/main/video.png')
     link = net.http_GET(base_url).content
     match=re.compile('All\sTitles(.+?)</ul>', re.S).findall(link)
     if match:
@@ -37,13 +39,24 @@ def CATEGORIES():
 def INDEX(url):
     next_page = ''
     link = net.http_GET(url).content
-    match=re.compile('<div\sclass="panel-img">.+?<a\shref="(.*?)"\stitle="(.+?)".*?<img\ssrc="(.+?)"', re.S).findall(link)
-    np=re.compile('<li class="active">.+?<a href="(.+?)">').findall(link)
+    match=re.compile('<div\sclass="vid-panel-img">.*?<a\shref="(.*?)"><img data-src="(.*?)".*?"vid-title vid-marquee">(.*?)<', re.S).findall(link)
+    lastpage=re.compile('data-ci-pagination-page="(\d+)">Last', re.S).findall(link)
+    np=re.compile('<li class="active">.+?href=".".+?<a href="(.+?)"').findall(link)
+    
     if len(np) > 0 and np[0] != "#":
         next_page = np[0]
+        pageparse = re.search('http://www.pornhive.tv.*?/(\d+)$', url)
+        if pageparse:
+            page = str(int(pageparse.group(1))/20 +1)
+        else:
+            page = '2'
+        if lastpage:
+            lastpage = "/" + str(int(lastpage[-1])/20)
+        else:
+            lastpage = ''
         if settings.getSetting('nextpagetop') == 'true':
-            main.addDir('[COLOR blue]Next Page[/COLOR]',next_page,'pornhiveIndex',artwork + '/main/next.png')
-    for url,name,thumbnail in match:
+            main.addDir('[COLOR blue]Next Page %s%s[/COLOR]' % (page,lastpage),next_page,'pornhiveIndex',artwork + '/main/next.png')
+    for url,thumbnail,name in match:
         try:
             if "///" in thumbnail:
                 thumbnail = "http://" + thumbnail.split("///")[1]
@@ -57,7 +70,7 @@ def INDEX(url):
 
 def VIDEOLINKS(name,url,thumb):
     link = net.http_GET(url).content
-    match1=re.compile('<li\sid="link-(.+?)".+?Watch\sit\son\s+(.+?)\s', re.S).findall(link)
+    match1=re.compile('data-id="(.*?)".*?Watch\sit\son\s+(.*?)"', re.S).findall(link)
     for url,hoster in match1:
         url = "%s/en/out/%s" % (base_url, url)
         main.addDir(hoster,url,'pornhivePlayLinks',thumb)
