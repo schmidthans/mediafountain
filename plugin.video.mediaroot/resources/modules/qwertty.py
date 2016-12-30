@@ -18,11 +18,12 @@ def CATEGORIES():
     main.addDir('Bizarre', base_url +'/tags/Bizarre/','qwerttyIndex',artwork + '/main/video.png')
     main.addDir('Black', base_url +'/tags/Black/','qwerttyIndex',artwork + '/main/video.png')
     main.addDir('Bonnie+Rotten', base_url +'/tags/Bonnie+Rotten/','qwerttyIndex',artwork + '/main/video.png')
+    main.addDir('Bonnie+Rotten', base_url +'/tags/B/','qwerttyIndex',artwork + '/main/video.png')
     main.addDir('Germany', base_url +'/tags/GERMANY/','qwerttyIndex',artwork + '/main/video.png')
     main.addDir('Fetish', base_url +'/tags/Fetish/','qwerttyIndex',artwork + '/main/video.png')
     main.addDir('Fisting', base_url +'/tags/Fisting/','qwerttyIndex',artwork + '/main/video.png')
     link = net.http_GET(base_url).content
-    match=re.compile('Select categories(.+?)</nav>', re.S).findall(link)
+    match=re.compile('Select categories(.+?)</ul>', re.S).findall(link)
     if match:
         match1=re.compile('<li><a href="(/.+?)/">(.+?)</a></li>', re.S).findall(match[0])
         if len(match1) > 0:
