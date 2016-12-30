@@ -31,11 +31,21 @@ def INDEX(url):
         np_url = ''
         link = net.http_GET(url).content
         match=re.compile('class="boxtitle">.+?<a href="(.+?)".+?title="(.+?)".+?<img src="(.+?)"', re.S).findall(link)
-        np=re.compile("<link rel='next' href='(.+?)'/>").findall(link)
+        np=re.compile("<link rel='next' href='(.+?)'").findall(link)
         if len(np) > 0:
                 np_url = np[0]
+                lastpage=re.compile('class="last" href=".+?/(\d+)/', re.S).findall(link)
+                pageparse = re.search('http://www.freeomovie.com.*?/(\d+)/$', url)
+                if pageparse:
+                    page = str(int(pageparse.group(1)) +1)
+                else:
+                    page = '2'
+                if lastpage:
+                    lastpage = "/" + str(int(lastpage[-1]))
+                else:
+                    lastpage = ''
                 if settings.getSetting('nextpagetop') == 'true':
-                        main.addDir('[COLOR blue]Next Page[/COLOR]',np_url,'freeOMovieIndex',artwork + '/main/next.png')
+                    main.addDir('[COLOR blue]Next Page %s%s[/COLOR]' % (page,lastpage),np_url,'freeOMovieIndex',artwork + '/main/next.png')
         for url,name,thumbnail in match:
                 name = name.encode('UTF-8')
                 try:
