@@ -9,23 +9,21 @@ open(mycookiefile, 'a').close()
 net = Net(cookie_file=mycookiefile)
 
 artwork = main.artwork
-base_url = 'http://video2k.is'
+base_url = 'http://www.video2k.is'
+URL_Hoster = base_url + '?c=ajax&m=movieStreams&id=%s'
 settings = main.settings
 
 def CATEGORIES():
-        url = base_url + '/index.php/ajax/cookieLang?lang=2&url=http://video2k.is/&cookies=no'
-        link = net.http_GET(url).content
-        test = net.save_cookies(mycookiefile)
-        main.addDir('Kinofilme',base_url +'/?c=movie&m=cinema','video2kIndex',artwork + '/main/movie.png')
-        main.addDir('Neue Filme',base_url +'/?c=movie&m=releases','video2kIndex',artwork + '/main/recentvideos.png')
+        main.addDir('Kinofilme',base_url +'/?c=movie&m=filter&genre=all&order_by=featured','video2kIndex',artwork + '/main/movie.png')
+        main.addDir('Neue Filme',base_url +'/?c=movie&m=filter&genre=all&order_by=releases','video2kIndex',artwork + '/main/recentvideos.png')
         main.addDir('Genres','none','video2kGenres',artwork + '/main/categories.png')
         main.addDir('Suche','none','video2kSearch',artwork + '/main/search.png')
 
 def GENRES():
     url = base_url
     link = net.http_GET(url).content
-    parse=re.search('class="sorter"(.+?)</div>', link, re.S)
-    genre=re.compile('value=\'(.+?)\'>(.+?)<', re.S).findall(parse.group(1))
+    parse=re.search('<select[^>]*class="sorter_genre"[^>]*>(.*?)</select>', link, re.S)
+    genre=re.compile("<option[^>]*value='([^']*)'[^>]*>([^<]+)</option>", re.S).findall(parse.group(1))
     if genre:
         for (phUrl, phTitle) in genre:
             url = base_url + "/?c=movie&m=filter&genre=" + phUrl + "&order_by=all"
@@ -38,7 +36,7 @@ def INDEX(url):
         next_page = ''
         np = {}
         link = net.http_GET(url).content
-        match=re.compile('<div onmouseover=["\']autoplay.+?.*?<img src=["\'](.+?)["\'].*?\s*href=["\'][^\'"]*?-(\d+)\.html["\']>(.*?)<',re.S).findall(link)
+        match=re.compile("<a href=[\"|'][^\s]+?-(\d+).html[\"|']\stitle=[\"|'](.*?)[-|\"|'].+?<img src=[\"|'](.*?)[\"|'].*?<p>\d+</p>",re.S).findall(link)
         parse=re.compile('class=\'pagination\'>(.+?)</div></div>', re.S).search(link)
         if parse:
             np=re.compile('<a href="([^<]+?per_page=(\d+))">Next').findall(parse.group(1))
@@ -59,8 +57,8 @@ def INDEX(url):
                 if settings.getSetting('nextpagetop') == 'true':
                         main.addDir('[COLOR blue]Next Page %s%s[/COLOR]' % (page,lastpage),next_page,'video2kIndex',artwork + '/main/next.png')
         if match:
-            for thumbnail,url,name in match:
-                url = 'http://video2k.is/?c=ajax&m=movieStreams2&id=' + url + '&lang=2&links=250'
+            for url,name,thumbnail in match:
+                url = URL_Hoster % url
                 try:
                     main.addDir(name,url,'video2kVideoLinks',thumbnail)
                 except:
