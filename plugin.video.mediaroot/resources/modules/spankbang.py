@@ -71,15 +71,19 @@ def INDEX(url):
 
 def VIDEOLINKS(name,url,thumb):
         link = net.http_GET(url).content
-        stream_quality=re.search('<li class="[qb]_(\d+)p"', link)
-        stream_id=re.search("var stream_id\s+=\s+'(.+?)';", link)
-        stream_key=re.search("var stream_key\s+=\s+'(.+?)';", link)
-        if stream_quality and stream_id and stream_key:
-            url= 'http://spankbang.com/_%s/%s/title/%s__mp4' % (stream_id.group(1), stream_key.group(1), stream_quality.group(1))
-            try:
-                main.RESOLVE(name,url,thumb)
-            except:
-                pass
+        stream=re.search('<source src="(.+?)"', link)
+        if stream:
+            url= 'http://spankbang.com/%s' % stream.group(1)
+        else:
+            stream_quality=re.search('<li class="[qb]_(\d+)p"', link)
+            stream_id=re.search("var stream_id\s+=\s+'(.+?)';", link)
+            stream_key=re.search("var stream_key\s+=\s+'(.+?)';", link)
+            if stream_quality and stream_id and stream_key:
+                url= 'http://spankbang.com/_%s/%s/title/%s__mp4' % (stream_id.group(1), stream_key.group(1), stream_quality.group(1))
+        try:
+            main.RESOLVE(name,url,thumb)
+        except:
+            pass
 
 def FILTER(url):
         url = url + '?length=long'
