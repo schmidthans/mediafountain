@@ -55,11 +55,7 @@ def INDEX(url):
              link=net.http_POST(base_url+'/index.php', dataPost).content
         else:
              link = net.http_GET(url).content
-#        match=re.compile('<div class="ImgWrapNews"><a href="(.+?.[jpg|png])" class="ulightbox" target="_blank".*?alt="(.+?)".*?></a></div>.*?<a class="newstitl entryLink" <.*?href="(.+?)">',re.S).findall(link)
         match=re.compile('<div class="ImgWrapNews"><a href="(.+?)".*?(/publ/.+?)">(.+?)</a></b>.*?<div class="MessWrapsNews" align="center"> <div class="MessWrapsNews2" style="height:110px;">(.+?)<',re.S).findall(link)
-
-        #movies = re.findall('<div class="ImgWrapNews"><a href="(.*?)".*?(/publ/.*?)">(.*?)</a></b>.*?<div class="MessWrapsNews" align="center"> <div class="MessWrapsNews2" style="height:110px;">(.*?)<', data, re.S)
-
         if issearch:
                 pass
         else:
@@ -85,6 +81,7 @@ def INDEX(url):
 
         if match:
             for thumbnail,url,name,h in match:
+                thumbnail = "http://www.szene-streams.com%s" % thumbnail
                 name=name.encode('utf-8')
                 url = 'http://szene-streams.com' + url
                 try: 
