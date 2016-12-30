@@ -155,7 +155,7 @@ def INDEX(url):
         else:
             parse=re.compile('<div class="pagenavigation ">(.+?)>Weiter', re.S).search(link)
             if parse:
-                np=re.compile('<a href="(.+?/(\d+)/)"').findall(parse.group(1))
+                np=re.compile('<span>\d+</span>.*?<a href="([^\s]+?/(\d+)/)"').findall(parse.group(1))
                 lp=re.compile('>(\d+)<').findall(parse.group(1))
                 if np:
                     next_page = np[0][0]
