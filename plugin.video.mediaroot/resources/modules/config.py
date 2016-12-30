@@ -1,7 +1,13 @@
-import sys
+import sys,os
 import xbmc
 import xbmcplugin
+import xbmcaddon
 from resources.modules import common
+
+PLUGIN_NAME = "mediaroot"
+
+__settings__ = xbmcaddon.Addon(id="plugin.video." + PLUGIN_NAME)
+__language__ = __settings__.getLocalizedString
 
 class cConfig:
 
@@ -51,3 +57,11 @@ class cConfig:
                  return xbmc.getLocalizedString(sCode)
             except:
                 return ''
+
+def get_data_path():
+    dev = xbmc.translatePath(__settings__.getAddonInfo('Profile'))
+
+    if not os.path.exists(dev):
+        os.makedirs(dev)
+
+    return dev
