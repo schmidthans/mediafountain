@@ -1,12 +1,17 @@
 # -*- coding: utf-8 -*-
-#Main MediaRoot module by o9r1sh
+# Main MediaRoot module by o9r1sh
 
-#Imports_____________________________________________________________________________________________________________________________
-import urllib,urllib2,re,xbmcplugin,xbmcgui,sys,urlresolver,xbmc,os,xbmcaddon
+# Imports_____________________________________________________________________________________________________________________________
+import urllib, urllib2, re, xbmcplugin, xbmcgui, sys, urlresolver, xbmc, os, xbmcaddon
 from metahandler import metahandlers
 
 from t0mm0.common.addon import Addon
 from t0mm0.common.net import Net
+#import scrapertools
+#import jsunpack
+#import logger
+
+headers = ''
 
 try:
     import StorageServer
@@ -24,18 +29,18 @@ class Thread(threading.Thread):
         if self._args:
             self._target(*self._args)
 
-#Define common.addon_____________________________________________________________________________________________________________________________
+# Define common.addon_____________________________________________________________________________________________________________________________
 addon_id = 'plugin.video.mediaroot'
 addon = Addon(addon_id, sys.argv)
-#print dir(addon)
-#print addon.get_path()
-#print "### path.join(addon.getAddonInfo('path'),'fanart.jpg')", addon.get_path()+'/artwork/main/movie.jpg'
+# print dir(addon)
+# print addon.get_path()
+# print "### path.join(addon.getAddonInfo('path'),'fanart.jpg')", addon.get_path()+'/artwork/main/movie.jpg'
 
 
-#Define Cache for favorites_____________________________________________________________________________________________________________________________
+# Define Cache for favorites_____________________________________________________________________________________________________________________________
 cache = StorageServer.StorageServer("MediaRoot", 0)
 
-#Define queries for common.addon_____________________________________________________________________________________________________________________________
+# Define queries for common.addon_____________________________________________________________________________________________________________________________
 mode = addon.queries['mode']
 url = addon.queries.get('url', '')
 name = addon.queries.get('name', '')
@@ -50,11 +55,11 @@ rmode = addon.queries.get('rmode', '')
 imdb_id = addon.queries.get('imdb_id', '')
 host = addon.queries.get('host', '')
 
-#Define other needed global variables_____________________________________________________________________________________________________________________________
+# Define other needed global variables_____________________________________________________________________________________________________________________________
 settings = xbmcaddon.Addon(id=addon_id)
-#artwork = addon.get_path()+'/artwork'
+# artwork = addon.get_path()+'/artwork'
 artwork = 'https://raw.githubusercontent.com/schmidthans/mediafountain/master/plugin.video.mediaroot/resources/artwork'
-grab=metahandlers.MetaData()
+grab = metahandlers.MetaData()
 net = Net(user_agent='Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:43.0) Gecko/20100101 Firefox/43.0')
 
 def resolvable(url):
@@ -220,24 +225,24 @@ def getHost(url, disk=''):
     return(host)
 
 def nameCleaner(name):
-       name = name.replace('&#8211;','')
-       name = name.replace("&#8217;","")
-       name = name.replace("&#8230;","")
-       #name = name.replace("’","")
+       name = name.replace('&#8211;', '')
+       name = name.replace("&#8217;", "")
+       name = name.replace("&#8230;", "")
+       # name = name.replace("’","")
        
        return(name)
     
-#Functions for handling favorites_____________________________________________________________________________________________________________________________
+# Functions for handling favorites_____________________________________________________________________________________________________________________________
 def addFavorite():
     saved_favs = cache.get('favourites_' + types)
     favs = []
     if saved_favs:
        favs = eval(saved_favs)
        if favs:
-          if (name, url ,rmode, thumb, show, year, season, episode) in favs:
+          if (name, url , rmode, thumb, show, year, season, episode) in favs:
              addon.show_small_popup(title='Item Already In Favorites', msg=name + ' Is Already In Your Favorites', delay=int(5000), image=thumb)
              return
-    favs.append((name, url ,rmode, thumb, show, year, season, episode))       
+    favs.append((name, url , rmode, thumb, show, year, season, episode))       
     cache.set('favourites_' + types, str(favs))
     addon.show_small_popup(title='Item Added To Favorites', msg=name + ' Was Added To Your Favorites', delay=int(5000), image=thumb)
 
@@ -245,7 +250,7 @@ def removeFavorite():
     saved_favs = cache.get('favourites_' + types)
     if saved_favs:
       favs = eval(saved_favs)
-      favs.remove((name, url ,rmode, thumb, show, year, season, episode))   
+      favs.remove((name, url , rmode, thumb, show, year, season, episode))   
       cache.set('favourites_' + types, str(favs))
       xbmc.executebuiltin("XBMC.Container.Refresh")
 
@@ -255,7 +260,7 @@ def getFavorites(url):
        if saved_favs:
           favs = sorted(eval(saved_favs), key=lambda fav: fav[1])
           for fav in favs:
-                addMDir(fav[0], fav[1] ,fav[2], fav[3], fav[4], True)
+                addMDir(fav[0], fav[1] , fav[2], fav[3], fav[4], True)
        AUTOVIEW('movies')
 
     elif url == 'tvshow':
@@ -263,7 +268,7 @@ def getFavorites(url):
        if saved_favs:
           favs = sorted(eval(saved_favs), key=lambda fav: fav[1])
           for fav in favs:
-                addSDir(fav[0], fav[1] ,fav[2], fav[3], True)
+                addSDir(fav[0], fav[1] , fav[2], fav[3], True)
              
        AUTOVIEW('tvshows')
 
@@ -272,7 +277,7 @@ def getFavorites(url):
        if saved_favs:
           favs = sorted(eval(saved_favs), key=lambda fav: fav[1])
           for fav in favs:
-                addToonDir(fav[0], fav[1] ,fav[2], fav[3], True)
+                addToonDir(fav[0], fav[1] , fav[2], fav[3], True)
              
        AUTOVIEW('tvshows')
 
@@ -281,53 +286,53 @@ def getFavorites(url):
        if saved_favs:
           favs = sorted(eval(saved_favs), key=lambda fav: fav[1])
           for fav in favs:
-                addAnimeDir(fav[0], fav[1] ,fav[2], fav[3], True)
+                addAnimeDir(fav[0], fav[1] , fav[2], fav[3], True)
              
        AUTOVIEW('tvshows')
 
-#Metadata Function_____________________________________________________________________________________________________________________________    
-def getMeta(types,name,year,show,season,episode):
+# Metadata Function_____________________________________________________________________________________________________________________________    
+def getMeta(types, name, year, show, season, episode):
     show_meta = 0
     meta = 0
-    if types=='movie':
-       meta = grab.get_meta('movie',name,year)
-    elif types=='tvshow':
-       meta = grab.get_meta('tvshow',name)
-    elif types=='episode':
+    if types == 'movie':
+       meta = grab.get_meta('movie', name, year)
+    elif types == 'tvshow':
+       meta = grab.get_meta('tvshow', name)
+    elif types == 'episode':
        try:
-          show_meta = grab.get_meta('tvshow',show)
+          show_meta = grab.get_meta('tvshow', show)
        except:
           show_meta = 0
        if show_meta == 0:
           return 0
        else:
           imdb_id = show_meta['imdb_id']
-          meta = grab.get_episode_meta(show,imdb_id,season,episode)
+          meta = grab.get_episode_meta(show, imdb_id, season, episode)
     return(meta)
 
-#Directory Functions_____________________________________________________________________________________________________________________________
+# Directory Functions_____________________________________________________________________________________________________________________________
 
-#Standard directory funtion to be used when not doing scrapes on the directory_____________________________________________________________________________________________________________________________
-def addDir(name,url,mode,thumb):
+# Standard directory funtion to be used when not doing scrapes on the directory_____________________________________________________________________________________________________________________________
+def addDir(name, url, mode, thumb):
     name = nameCleaner(name)
     if thumb == '':
        thumb = artwork + '/main/noepisode.png'
     params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'year':year, 'types':'movie'}
-    addon.add_directory(params, {'title':name}, img= thumb, fanart= artwork + '/main/fanart.jpg')
+    addon.add_directory(params, {'title':name}, img=thumb, fanart=artwork + '/main/fanart.jpg')
 
-#Movie directory function to be used when adding a movie, all metadata scrapes and context menu items are handled within_____________________________________________________________________________________________________________________________
-def addMDir(name,url,mode,thumb,year,isfav):
+# Movie directory function to be used when adding a movie, all metadata scrapes and context menu items are handled within_____________________________________________________________________________________________________________________________
+def addMDir(name, url, mode, thumb, year, isfav):
     name = nameCleaner(name)
     meta = {}
     contextMenuItems = []
 
-    title = re.split('\d\d\d\d',name)
+    title = re.split('\d\d\d\d', name)
 
     if title[0] == '':
        title = name
     if settings.getSetting('metadata') == 'true':
-       meta = getMeta('movie',title[0],year,'','','')
-    year = re.sub('[()]','',year)
+       meta = getMeta('movie', title[0], year, '', '', '')
+    year = re.sub('[()]', '', year)
     if year == '':
        try:
           year = meta['year']
@@ -364,12 +369,12 @@ def addMDir(name,url,mode,thumb,year,isfav):
     if os.path.exists(xbmc.translatePath("special://home/addons/plugin.video.collective")):
                     contextMenuItems.append(('Search The Collective', 'XBMC.Container.Update(%s?mode=51&url=url&name=%s)' % ('plugin://plugin.video.collective/', name)))
     if settings.getSetting('metadata') == 'true':
-        addon.add_directory(params, meta, contextMenuItems, img= thumb, fanart=fanart)
+        addon.add_directory(params, meta, contextMenuItems, img=thumb, fanart=fanart)
     else:
-        addon.add_directory(params, {'title':name},contextMenuItems, img=thumb, fanart= artwork + '/main/fanart.jpg')
+        addon.add_directory(params, {'title':name}, contextMenuItems, img=thumb, fanart=artwork + '/main/fanart.jpg')
 
-#TV Show directory function to be used when adding a TV Show, all metadata scrapes and context menu items are handled within__________
-def addSDir(name,url,mode,thumb,isfav):
+# TV Show directory function to be used when adding a TV Show, all metadata scrapes and context menu items are handled within__________
+def addSDir(name, url, mode, thumb, isfav):
     name = nameCleaner(name)
     contextMenuItems = []
     meta = {}
@@ -377,7 +382,7 @@ def addSDir(name,url,mode,thumb,isfav):
     params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'year':year, 'types':types, 'show':name}
 
     if settings.getSetting('metadata') == 'true':
-        meta = grab.get_meta('tvshow',name)
+        meta = grab.get_meta('tvshow', name)
         if meta['backdrop_url'] == '':
             fanart = artwork + '/main/fanart.jpg'
         else:
@@ -409,10 +414,10 @@ def addSDir(name,url,mode,thumb,isfav):
     if settings.getSetting('metadata') == 'true':
         addon.add_directory(params, meta, contextMenuItems, img=thumb, fanart=fanart)
     else:
-        addon.add_directory(params, {'title':name}, contextMenuItems, img= thumb, fanart=fanart)
+        addon.add_directory(params, {'title':name}, contextMenuItems, img=thumb, fanart=fanart)
 
-#Cartoon directory function to be used when adding a Cartoon Series, all metadata scrapes and context menu items are handled within___
-def addToonDir(name,url,mode,thumb,isfav):
+# Cartoon directory function to be used when adding a Cartoon Series, all metadata scrapes and context menu items are handled within___
+def addToonDir(name, url, mode, thumb, isfav):
     name = nameCleaner(name)
     contextMenuItems = []
     meta = {}
@@ -420,7 +425,7 @@ def addToonDir(name,url,mode,thumb,isfav):
     params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'year':year, 'types':'cartoon', 'show':name}
 
     if settings.getSetting('metadata') == 'true':
-        meta = grab.get_meta('tvshow',name)
+        meta = grab.get_meta('tvshow', name)
         if meta['backdrop_url'] == '':
             fanart = artwork + '/main/fanart.jpg'
         else:
@@ -452,10 +457,10 @@ def addToonDir(name,url,mode,thumb,isfav):
     if settings.getSetting('metadata') == 'true':
         addon.add_directory(params, meta, contextMenuItems, img=thumb, fanart=fanart)
     else:
-        addon.add_directory(params, {'title':name},contextMenuItems , img= thumb, fanart=fanart)
+        addon.add_directory(params, {'title':name}, contextMenuItems , img=thumb, fanart=fanart)
 
-#Anime directory function to be used when adding a Anime Series, all metadata scrapes and context menu items are handled within______
-def addAnimeDir(name,url,mode,thumb, isfav):
+# Anime directory function to be used when adding a Anime Series, all metadata scrapes and context menu items are handled within______
+def addAnimeDir(name, url, mode, thumb, isfav):
     name = nameCleaner(name)
     contextMenuItems = []
     meta = {}
@@ -463,7 +468,7 @@ def addAnimeDir(name,url,mode,thumb, isfav):
     params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'year':year, 'types':'anime', 'show':name}
 
     if settings.getSetting('metadata') == 'true':
-        meta = grab.get_meta('tvshow',name)
+        meta = grab.get_meta('tvshow', name)
         if meta['backdrop_url'] == '':
             fanart = artwork + '/main/fanart.jpg'
         else:
@@ -500,20 +505,20 @@ def addAnimeDir(name,url,mode,thumb, isfav):
     if settings.getSetting('metadata') == 'true':
         addon.add_directory(params, meta, contextMenuItems, img=thumb, fanart=fanart)
     else:
-        addon.add_directory(params, {'title':name},contextMenuItems, img= thumb, fanart=fanart)
+        addon.add_directory(params, {'title':name}, contextMenuItems, img=thumb, fanart=fanart)
 
-#Host directory function to be used when adding a file Host, hthumb stands for host thumb and should be grabbed using the 'GETHOSTTHUMB(host)' function before hand
-def addHDir(name,url,mode,thumb, disk=''):
+# Host directory function to be used when adding a file Host, hthumb stands for host thumb and should be grabbed using the 'GETHOSTTHUMB(host)' function before hand
+def addHDir(name, url, mode, thumb, disk=''):
     host = getHost(url, disk)
     if thumb == '':
         thumb = GETHOSTTHUMB(host)
     fanart = artwork + '/main/fanart.jpg'
-    name = re.sub('[()]','',name)
+    name = re.sub('[()]', '', name)
     params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'year':year, 'types':types, 'season':season, 'episode':episode, 'show':show}
     addon.add_directory(params, {'title':host}, img=thumb, fanart=fanart)
 
-#Episode directory function to be used when adding a Episode, all metadata scrapes and context menu items are handled within_________
-def addEDir(name,url,mode,thumb,show):
+# Episode directory function to be used when adding a Episode, all metadata scrapes and context menu items are handled within_________
+def addEDir(name, url, mode, thumb, show):
     name = nameCleaner(name)
     ep_meta = None
     show_id = None
@@ -521,23 +526,23 @@ def addEDir(name,url,mode,thumb,show):
     othumb = thumb
              
     if settings.getSetting('metadata') == 'true':
-        meta = grab.get_meta('tvshow',show)
+        meta = grab.get_meta('tvshow', show)
         show_id = meta['imdb_id']
 
     else:
         fanart = artwork + '/main/fanart.jpg'
     
-    s,e = GET_EPISODE_NUMBERS(name)
+    s, e = GET_EPISODE_NUMBERS(name)
 
     if settings.getSetting('metadata') == 'true':
         try:
-            ep_meta = grab.get_episode_meta(show,show_id,int(s),int(e))
+            ep_meta = grab.get_episode_meta(show, show_id, int(s), int(e))
             if ep_meta['cover_url'] == '':
                 thumb = artwork + '/main/noepisode.png'
             else:
                 thumb = str(ep_meta['cover_url'])
         except:
-            ep_meta=None
+            ep_meta = None
             thumb = artwork + '/main/noepisode.png'
            
     else:
@@ -548,7 +553,7 @@ def addEDir(name,url,mode,thumb,show):
     params = {'url':url, 'mode':mode, 'name':name, 'thumb':thumb, 'season':s, 'episode':e, 'show':show, 'types':'episode'}       
     if settings.getSetting('metadata') == 'true':
 
-        if ep_meta==None:
+        if ep_meta == None:
             fanart = artwork + '/main/fanart.jpg'
             addon.add_directory(params, {'title':name}, img=thumb, fanart=fanart) 
         else:
@@ -559,29 +564,29 @@ def addEDir(name,url,mode,thumb,show):
             ep_meta['title'] = name
             addon.add_directory(params, ep_meta, fanart=fanart, img=thumb)
     else:
-        addon.add_directory(params, {'title':name},fanart=fanart, img=thumb) 
+        addon.add_directory(params, {'title':name}, fanart=fanart, img=thumb) 
 
-#Called within the addEDir function, returns needed season and episode numbers needed for metadata scraping___________________________
+# Called within the addEDir function, returns needed season and episode numbers needed for metadata scraping___________________________
 
 def GET_EPISODE_NUMBERS(ep_name):
     s = None
     e = None
-    ep_name = re.sub('×','X',ep_name)
+    ep_name = re.sub('×', 'X', ep_name)
 
-    S00E00 = re.findall('[Ss]\d\d[Ee]\d\d',ep_name)
-    SXE = re.findall('\d[Xx]\d',ep_name)
-    SXEE = re.findall('\d[Xx]\d\d',ep_name)
-    SXEEE = re.findall('\d[Xx]\d\d\d',ep_name)
+    S00E00 = re.findall('[Ss]\d\d[Ee]\d\d', ep_name)
+    SXE = re.findall('\d[Xx]\d', ep_name)
+    SXEE = re.findall('\d[Xx]\d\d', ep_name)
+    SXEEE = re.findall('\d[Xx]\d\d\d', ep_name)
 
-    SSXE = re.findall('\d\d[Xx]\d',ep_name)
-    SSXEE = re.findall('\d\d[Xx]\d\d',ep_name)
-    SSXEEE = re.findall('\d\d[Xx]\d\d\d',ep_name)
+    SSXE = re.findall('\d\d[Xx]\d', ep_name)
+    SSXEE = re.findall('\d\d[Xx]\d\d', ep_name)
+    SSXEEE = re.findall('\d\d[Xx]\d\d\d', ep_name)
     
     if S00E00:
         print 'Naming Style Is S00E00'
         S00E00 = str(S00E00)
         S00E00.strip('[Ss][Ee]')
-        S00E00 = S00E00.replace("u","")
+        S00E00 = S00E00.replace("u", "")
         e = S00E00[-4:]
         e = e[:-2]
         s = S00E00[:5]
@@ -590,7 +595,7 @@ def GET_EPISODE_NUMBERS(ep_name):
     if SXE:
         print 'Naming Style Is SXE'
         SXE = str(SXE)
-        SXE = SXE.replace("u","")
+        SXE = SXE.replace("u", "")
         print 'Numer String is ' + SXE
         s = SXE[2]
         e = SXE[4]
@@ -598,7 +603,7 @@ def GET_EPISODE_NUMBERS(ep_name):
     if SXEE:
         print 'Naming Style Is SXEE'
         SXEE = str(SXEE)
-        SXEE = SXEE.replace("u","")
+        SXEE = SXEE.replace("u", "")
         print 'Numer String is ' + SXEE
         s = SXEE[2]
         e = SXEE[4] + SXEE[5]
@@ -606,7 +611,7 @@ def GET_EPISODE_NUMBERS(ep_name):
     if SXEEE:
         print 'Naming Style Is SXEEE'
         SXEEE = str(SXEEE)
-        SXEEE = SXEEE.replace("u","")
+        SXEEE = SXEEE.replace("u", "")
         print 'Numer String is ' + SXEEEE
         s = SXEEE[2]
         e = SXEEE[4] + SXEEE[5] + SXEEE[6]
@@ -614,7 +619,7 @@ def GET_EPISODE_NUMBERS(ep_name):
     if SSXE:
         print 'Naming Style Is SSXE'
         SSXE = str(SSXE)
-        SSXE = SSXE.replace("u","")
+        SSXE = SSXE.replace("u", "")
         print 'Numer String is ' + SSXE
         s = SSXE[2] + SSXE[3]
         e = SSXE[5]
@@ -622,7 +627,7 @@ def GET_EPISODE_NUMBERS(ep_name):
     if SSXEE:
         print 'Naming Style Is SSXEE'
         SSXEE = str(SSXEE)
-        SSXEE = SSXEE.replace("u","")
+        SSXEE = SSXEE.replace("u", "")
         print 'Numer String is ' + SSXEE
         s = SSXEE[2] + SSXEE[3]
         e = SSXEE[5] + SSXEE[6]
@@ -630,14 +635,14 @@ def GET_EPISODE_NUMBERS(ep_name):
     if SSXEEE:
         print 'Naming Style Is SSXEEE'
         SSXEEE = str(SSXEEE)
-        SSXEEE = SSXEEE.replace("u","")
+        SSXEEE = SSXEEE.replace("u", "")
         print 'Numer String is ' + SSXEEE
         s = SSXEEE[2] + SSXEE[3]
         e = SSXEEE[5] + SSXEEE[6] + SSXEEE[7]
 
-    return s,e
+    return s, e
 
-#Returns the host thumbnail so that you can pass it as and argument to the addHDir function__________________________________________
+# Returns the host thumbnail so that you can pass it as and argument to the addHDir function__________________________________________
 def GETHOSTTHUMB(host):
     if host.endswith('.com'):
         host = host[:-4]
@@ -681,53 +686,56 @@ def GETHOSTTHUMB(host):
     if host == '':
         host = 'nowvideo'
     
-    host = artwork + '/hosts/' + host +'.png'
+    host = artwork + '/hosts/' + host + '.png'
     host = host.lower()
     return(host)
 
-#Function used for resolving video urls before  playback_____________________________________________________________________________    
-def RESOLVE(name,url,thumb):
-    meta=0
+# Function used for resolving video urls before  playback_____________________________________________________________________________    
+def RESOLVE(name, url, thumb):
+    meta = 0
     try:
-        meta = getMeta(types,name,year,show,season,episode)
+        meta = getMeta(types, name, year, show, season, episode)
     except:
-        meta=0
+        meta = 0
     hmf = urlresolver.HostedMediaFile(url)
     host = ''
-    if 'openload' in url:
+    if 'openload_dummy' in url:
         url = OPENLOAD(url)
-    elif 'videowood' in url:
-        url = VIDEOWOOD(url)
+#    elif 'flashx' in url:
+#        url = FLASHX(url)
+#    elif 'videowood' in url:
+#        url = VIDEOWOOD(url)
     elif hmf:
         url = urlresolver.resolve(url)
-        host = hmf.get_host()
+        # host = hmf.get_host()
     else:
         url = OTHER_RESOLVERS(url)
 
     params = {'url':url, 'name':name, 'thumb':thumb}
     if meta == 0:
         addon.add_video_item(params, {'title':name}, img=thumb)
-        liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumb)
+        liz = xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=thumb)
 
     else:
         addon.add_video_item(params, {'title':name}, img=meta['cover_url'])
-        liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=meta['cover_url'])
-        liz.setInfo('video',infoLabels=meta)
+        liz = xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=meta['cover_url'])
+        liz.setInfo('video', infoLabels=meta)
     if str(type(url)) == "<type 'instance'>" or url == False:
         xbmc.executebuiltin("Notification('ERROR','File Not Found or removed')")
         print "error not found"
         dialog = xbmcgui.Dialog()
-        #dialog.notification('Movie Trailers', 'Finding Nemo download finished.', xbmcgui.NOTIFICATION_INFO, 5000)
+        # dialog.notification('Movie Trailers', 'Finding Nemo download finished.', xbmcgui.NOTIFICATION_INFO, 5000)
         dialog.select('Error message', ['File Not Found or removed'], 5000)
-        #dialog.ok(" Error message ", " File Not Found or removed ")
-        #xbmc.sleep(1000)
-        #xbmc.Player ().play(url, liz, False)
+        # dialog.ok(" Error message ", " File Not Found or removed ")
+        # xbmc.sleep(1000)
+        # xbmc.Player ().play(url, liz, False)
     else:
-        #xbmc.Notification(header,message["################# ERROR",5,None])
+        # xbmc.Notification(header,message["################# ERROR",5,None])
         xbmc.sleep(1000)
         xbmc.Player().play(url, liz, False)
 
-#Used to resolve urls that urlresolver doesn't support________________________________________________________________________________
+# Used to resolve urls that urlresolver doesn't support________________________________________________________________________________
+
 def VIDEOWOOD(url):
     link = url
     if re.search('videowood\.tv/embed', url, re.S):
@@ -740,7 +748,7 @@ def VIDEOWOOD(url):
     parse = re.search('(ωﾟ.*?);</script>', result.encode('utf-8'), re.S)
     if parse:
         todecode = parse.group(1).split(';')
-        todecode = todecode[-1].replace(' ','')
+        todecode = todecode[-1].replace(' ', '')
 
         code = {
             "(ﾟДﾟ)[ﾟoﾟ]" : "o",
@@ -763,13 +771,13 @@ def VIDEOWOOD(url):
             "(ﾟｰﾟ)": "4",
             }
         cryptnumbers = []
-        for searchword,isword in code.iteritems():
-            todecode = todecode.replace(searchword,isword)
+        for searchword, isword in code.iteritems():
+            todecode = todecode.replace(searchword, isword)
         for i in range(len(todecode)):
-            if todecode[i:i+2] == '/+':
-                for j in range(i+2, len(todecode)):
-                    if todecode[j:j+2] == '+/':
-                        cryptnumbers.append(todecode[i+1:j])
+            if todecode[i:i + 2] == '/+':
+                for j in range(i + 2, len(todecode)):
+                    if todecode[j:j + 2] == '+/':
+                        cryptnumbers.append(todecode[i + 1:j])
                         i = j
                         break
                         break
@@ -780,7 +788,7 @@ def VIDEOWOOD(url):
             while jcounter < len(item):
                 clipcounter = 0
                 if item[jcounter] == '(':
-                    jcounter +=1
+                    jcounter += 1
                     clipcounter += 1
                     for k in range(jcounter, len(item)):
                         if item[k] == '(':
@@ -789,11 +797,11 @@ def VIDEOWOOD(url):
                             clipcounter -= 1
                         if clipcounter == 0:
                             jcounter = 0
-                            chrnumber = chrnumber + str(eval(item[:k+1]))
-                            item = item[k+1:]
+                            chrnumber = chrnumber + str(eval(item[:k + 1]))
+                            item = item[k + 1:]
                             break
                 else:
-                    jcounter +=1
+                    jcounter += 1
             finalstring = finalstring + chrnumber.decode('unicode-escape')
         url = re.search('=\s*(\'|")(.*?)$', finalstring)
         if url:
@@ -805,15 +813,15 @@ def OPENLOAD(url):
     if embed:
         link = 'https://openload.co/embed/' + embed.group(1)
     result = net.http_GET(link).content
-    number=re.compile('<script type="text/javascript">[\w]+\s+=\s+(\d+)\s+-\s+(\d+)').findall(result)
+    number = re.compile('<script type="text/javascript">[\w]+\s+=\s+(\d+)\s+-\s+(\d+)').findall(result)
     if number:
         pos = int(number[0][0]) - int(number[0][1])
-        parse=re.compile('type="text/javascript">(.'+u'ωﾟ' + '.+?);</script>', re.S).findall(result)
+        parse = re.compile('type="text/javascript">(.' + u'ωﾟ' + '.+?);</script>', re.S).findall(result)
         if parse and len(parse) > pos:
             item = parse[pos]
             dataout = ''
             todecode = item.split(';')
-            todecode = todecode[-1].replace(' ','')
+            todecode = todecode[-1].replace(' ', '')
             code = {
                 "(ﾟДﾟ)[ﾟoﾟ]" : "o",
                 "(ﾟДﾟ) [return]" : "\\",
@@ -836,20 +844,20 @@ def OPENLOAD(url):
                 }
             try:
                 todecode = todecode.encode('utf-8')
-                for searchword,isword in code.iteritems():
-                    todecode = todecode.replace(searchword,isword)
+                for searchword, isword in code.iteritems():
+                    todecode = todecode.replace(searchword, isword)
 
-                todecode = todecode.replace('!+[]','1').replace('-~','1+').replace('[]','0')
-                todecode = re.sub(r'\((\d)\+(\d)\)', lambda m: '{0}'.format(int(m.group(1)) + int(m.group(2))), todecode.replace(" ","")).replace(" ","")
-                todecode = re.sub(r'\((\d)\^(\d)\^(\d)\)', lambda m: '{0}'.format(int(m.group(1)) ^ int(m.group(2))^ int(m.group(3))), todecode).replace(" ","")
-                todecode = re.sub(r'\((\d)\+(\d)\)', lambda m: '{0}'.format(int(m.group(1)) + int(m.group(2))), todecode).replace(" ","")
-                todecode = re.sub(r'\((\d)\-(\d)\)', lambda m: '{0}'.format(int(m.group(1)) - int(m.group(2))), todecode).replace(" ","")
-                todecode = re.sub(r'\((\d)\+(\d)\+(\d)\)', lambda m: '{0}'.format(int(m.group(1)) + int(m.group(2))+ int(m.group(3))), todecode).replace(" ","")
-                todecode = re.sub(r'\((\d)\-(\d)\+(\d)\)', lambda m: '{0}'.format(int(m.group(1)) - int(m.group(2))+ int(m.group(3))), todecode).replace(" ","")
-                todecode = re.sub(r'\((\d)\+(\d)\-(\d)\)', lambda m: '{0}'.format(int(m.group(1)) + int(m.group(2))- int(m.group(3))), todecode).replace(" ","")
+                todecode = todecode.replace('!+[]', '1').replace('-~', '1+').replace('[]', '0')
+                todecode = re.sub(r'\((\d)\+(\d)\)', lambda m: '{0}'.format(int(m.group(1)) + int(m.group(2))), todecode.replace(" ", "")).replace(" ", "")
+                todecode = re.sub(r'\((\d)\^(\d)\^(\d)\)', lambda m: '{0}'.format(int(m.group(1)) ^ int(m.group(2)) ^ int(m.group(3))), todecode).replace(" ", "")
+                todecode = re.sub(r'\((\d)\+(\d)\)', lambda m: '{0}'.format(int(m.group(1)) + int(m.group(2))), todecode).replace(" ", "")
+                todecode = re.sub(r'\((\d)\-(\d)\)', lambda m: '{0}'.format(int(m.group(1)) - int(m.group(2))), todecode).replace(" ", "")
+                todecode = re.sub(r'\((\d)\+(\d)\+(\d)\)', lambda m: '{0}'.format(int(m.group(1)) + int(m.group(2)) + int(m.group(3))), todecode).replace(" ", "")
+                todecode = re.sub(r'\((\d)\-(\d)\+(\d)\)', lambda m: '{0}'.format(int(m.group(1)) - int(m.group(2)) + int(m.group(3))), todecode).replace(" ", "")
+                todecode = re.sub(r'\((\d)\+(\d)\-(\d)\)', lambda m: '{0}'.format(int(m.group(1)) + int(m.group(2)) - int(m.group(3))), todecode).replace(" ", "")
             except:
                 print "ERROR parsing openload code"
-            thestring =  re.search("return3(.+?)\'\d\'", todecode.replace("+","").replace(")","").replace("(",""))
+            thestring = re.search("return3(.+?)\'\d\'", todecode.replace("+", "").replace(")", "").replace("(", ""))
             if thestring:
                 items = thestring.group(1).split("/")
                 for charcode in items:
@@ -867,7 +875,7 @@ def OPENLOAD(url):
                 dataout = openloadDecode(dataout)
                 url = re.search('\s(http.+?)\}', dataout)
                 if url:
-                    link = str(url.group(1).encode('utf-8')).replace('https','http')
+                    link = str(url.group(1).encode('utf-8')).replace('https', 'http')
                     import requests
                     user_agent = {'User-agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:43.0) Gecko/20100101 Firefox/43.0'}
                     response = requests.head(link, allow_redirects=True, headers=user_agent)
@@ -881,96 +889,69 @@ def openloadDecode(data):
             newstr += data[i]
             i += 1
         else:
-            code = data[i+2:data.find(")", i)].split(',')
-            if re.match('\d' ,code[0]):
-                radix = int(code[0])+27
+            code = data[i + 2:data.find(")", i)].split(',')
+            if re.match('\d' , code[0]):
+                radix = int(code[0]) + 27
                 num = int(code[1])
                 decodestr = ""
                 while num > 0:  
                     decodestr = "0123456789abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz"[num % radix] + decodestr
                     num /= radix
                 newstr += decodestr
-                i = data.find(")", i)+1
+                i = data.find(")", i) + 1
             else:
-                i = data.find(")", i)+1
-    return newstr.replace('"','').replace('+','')
+                i = data.find(")", i) + 1
+    return newstr.replace('"', '').replace('+', '')
 
 def OTHER_RESOLVERS(url):
     if 'uploadcrazy' in url:
         link = net.http_GET(url).content
-        links=re.compile("file': '(.+?)'").findall(link)
+        links = re.compile("file': '(.+?)'").findall(link)
         if len(links) > 0:
                 url = links[0]
 
     if 'vidcrazy' in url:
         link = net.http_GET(url).content
-        links=re.compile("file': '(.+?)'").findall(link)
+        links = re.compile("file': '(.+?)'").findall(link)
         if len(links) > 0:
                 url = links[0]
 
     if 'animeonair' in url:
         link = net.http_GET(url).content
-        links=re.compile("file': '(.+?)'").findall(link)
+        links = re.compile("file': '(.+?)'").findall(link)
         if len(links) > 0:
                 url = links[0]
 
     if 'epornik' in url:
         link = net.http_GET(url).content
-        links=re.compile('s1.addVariable(.+?);').findall(link)
+        links = re.compile('s1.addVariable(.+?);').findall(link)
         dirty = re.sub("[',)(]", '', (links[5]))
-        url =   dirty[7:-1]
+        url = dirty[7:-1]
 
     if 'video44' in url:
-        url = url.replace('&#038;','&')
+        url = url.replace('&#038;', '&')
         link = net.http_GET(url).content
-        match=re.compile('file: "(.+?)"').findall(link)
+        match = re.compile('file: "(.+?)"').findall(link)
         url = match[0]
 
     if 'play44' in url:
-        url = url.replace('&#038;','&')
+        url = url.replace('&#038;', '&')
         link = net.http_GET(url).content
-        match=re.compile("\n\t\t\t\t\t\t\t\t\t\t\t\turl: \'(.+?)'").findall(link)
+        match = re.compile("\n\t\t\t\t\t\t\t\t\t\t\t\turl: \'(.+?)'").findall(link)
         url = match[0]
-        url = url.replace('%2F','/')
-        url = url.replace('%3F','?')
-        url = url.replace('%3D','=')
-        url = url.replace('%26','&')
+        url = url.replace('%2F', '/')
+        url = url.replace('%3F', '?')
+        url = url.replace('%3D', '=')
+        url = url.replace('%26', '&')
 
     if 'cheesestream' in url:
         link = net.http_GET(url).content
-        match=re.compile('<source src="(.+?)"').findall(link)
+        match = re.compile('<source src="(.+?)"').findall(link)
         url = match[0]
-
-#     if 'flashx' in url and 'embed_player' in url:
-#         link = net.http_GET(url).content
-#         yes=re.compile('name="yes".*?value="(.+?)"').findall(link)
-#         sec=re.compile('name="sec".*?value="(.+?)"').findall(link)
-#         if yes and sec:
-#            dataPost = {'yes': yes[0], 'sec': sec[0]}
-#            data1=net.http_POST('http://play.flashx.tv/player/player.php', dataPost).content
-#            if data1:
-#               player=re.compile('value="(http://.+?\.flashx.tv/nuevo/player/.+?\.swf.*?)"').findall(data1)
-#               if player:
-#                  data2 = net.http_GET(player[0], {'Content-Type':'application/x-www-form-urlencoded', 'Referer': 'http://play.flashx.tv/player/player.php'}).content
-#                  if data2:
-#                     playerurl = player[0].split('config=')
-#                     data3 = net.http_GET(playerurl[1],{'Referer': player[0]} ).content
-#                     if data3:
-#                         stream_url=re.compile('<file>(.+?)</file>').findall(data3)
-#                         if stream_url:
-#                            url=stream_url[0]
-#                         else:
-#                            print "flashx data2 steam not found"
-#               else:
-#                  print "flashx player not found"
-#            else:
-#               print "flashx data1 not found"
-#         else:
-#            print "flashx no yes and sec found"
 
     return str(url)
 
-#Sets the desired view type___________________________________________________________________________________________________________    
+# Sets the desired view type___________________________________________________________________________________________________________    
 def AUTOVIEW(content):
        if content:
              xbmcplugin.setContent(int(sys.argv[1]), content)
@@ -984,4 +965,4 @@ def AUTOVIEW(content):
                     else:
                           xbmc.executebuiltin("Container.SetViewMode(%s)" % settings.getSetting('default-view'))
              else:
-                    xbmc.executebuiltin("Container.SetViewMode(%s)" % settings.getSetting('default-view') )
+                    xbmc.executebuiltin("Container.SetViewMode(%s)" % settings.getSetting('default-view'))
